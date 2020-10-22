@@ -9,7 +9,7 @@
 # http://www.ensembl.org/info/docs/api/index.html
 
 if [[ $# -eq 0 ]] ; then
-	echo "# usage: $0 production_name, example: arabidopsis_thaliana"
+	echo "# usage: $0 species_name, ie arabidopsis_thaliana"
 	exit 0
 else
 	SPECIES=$1
@@ -53,4 +53,4 @@ sort -k1,1 -k2,2n ${SPECIES}.repeats.curated.bed > ${SPECIES}.repeats.sorted.bed
 
 ~/soft/bedtools2/bin/bedtools merge -c 4 -o collapse -i ${SPECIES}.repeats.sorted.bed > ${SPECIES}.repeats.merged.bed
 
-
+mysql --host $SERVER --user $USER --port $PORT $SPECIESCORE -Nb -e "SELECT sr.name,d.sequence FROM dna d JOIN seq_region sr WHERE d.seq_region_id=sr.seq_region_id  ORDER BY sr.name" | perl -lane 'print ">$F[0]\n$F[1]\n"' > ${SPECIES}.repeats.dna
