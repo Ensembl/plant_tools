@@ -42,6 +42,11 @@ EGRELEASE=$(( RELEASE - 53));
 SPECIESCORE=$(mysql --host $SERVER --user $USER --port $PORT \
 	-e "show databases" | grep "${SPECIES}_core_${EGRELEASE}_${RELEASE}")
 
+if [ -z "$SPECIESCORE" ]; then
+	echo "# ERROR: cannot find species $SPECIES"
+	exit 1
+fi
+
 ## 3) retrieve 1-based coords of repeats
 
 # note these might be redundant/overlapping
