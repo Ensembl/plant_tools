@@ -11,7 +11,7 @@
 # http://www.ensembl.org/info/docs/api/index.html
 
 if [[ $# -eq 0 ]] ; then
-	echo "# example usage: $0 arabidopsis_thaliana"
+	echo "# example usage: $0 arabidopsis_thaliana [n of threads]"
 	exit 0
 else
 	SPECIES=$1
@@ -20,6 +20,7 @@ fi
 # PARAMS
 MINLEN=90
 MAXDEGENPERC=10
+MAXIDFRAC=0.95
 
 # SERVER DETAILS
 FTPSERVER="ftp://ftp.ensemblgenomes.org/pub"
@@ -76,22 +77,33 @@ sort -k1,1 -k2,2n _${SPECIES}.repeats.curated.bed | \
 FASTA="*${SPECIES^}*.dna.toplevel.fa.gz"
 URL="${FTPSERVER}/${DIV}/current/fasta/${SPECIES}/dna/${FASTA}"
 echo "# downloading $URL"
-wget -c $URL -O- | gunzip > _${SPECIES}.dna
+wget -c $URL -O- | gunzip > _${SPECIES}.toplevel.fasta
 
 ## 8) extract repeat sequences 
-bedtools getfasta -name -fi _${SPECIES}.dna -bed _${SPECIES}.repeats.sorted.bed >\
-	_${SPECIES}.repeats.dna
+bedtools getfasta -name -fi _${SPECIES}.toplevel.fasta -bed _${SPECIES}.repeats.sorted.bed >\
+	_${SPECIES}.repeats.fasta
 
 ## 9) eliminate degenerate (MAXDEGENPERC) 
-cat _${SPECIES}.repeats.dna | \
+cat _${SPECIES}.repeats.fasta | \
 	perl -slne 'if(/^(>.*)/){$h=$1} else {$fa{$h}.=$_} END{ foreach $h (keys(%fa)){ $l=length($fa{$h}); $dg=($fa{$h}=~tr/Nn//); print "$h\n$fa{$h}" if(100*$dg/$l<=$maxdeg) }}' \
-	-- -maxdeg=$MAXDEGENPERC > _${SPECIES}.repeats.nondeg.dna
+	-- -maxdeg=$MAXDEGENPERC > _${SPECIES}.repeats.nondeg.fasta
 
-# 10) eliminate short and redundant sequences 
-cd-hit-est -c 0.99 -l $MINLEN -i _${SPECIES}.repeats.nondeg.dna \
-	-o ${SPECIES}.${EGRELEASE}.repeats.nr.dna
+# 10) eliminate short and redundant sequences
+if [[ $# -eq 2 ]] ; then
+	THREADS=$2
+else
+	THREADS=1
+fi
 
-# 11) clean temp file
+cd-hit-est -M 1024 -T $THREADS -c $MAXIDFRAC -l $MINLEN \
+	-i _${SPECIES}.repeats.nondeg.fasta \
+	-o ${SPECIES}.${EGRELEASE}.repeats.nr.fasta
 
+# 11) clean temp files
+rm _${SPECIES}.*.bed _${SPECIES}.*.fasta _${SPECIES}.*.fai ${SPECIES}.*.clstr
+
+# 12) print outfile name
+echo
+echo "# output: " ${SPECIES}.${EGRELEASE}.repeats.nr.fasta
 
 exit 0
