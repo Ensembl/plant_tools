@@ -9,7 +9,7 @@ use Getopt::Long;
 # is loaded in @INC / $PERL5LIB
 #
 # Adapted from Dan Bolser's run_the_core_stats_pipeline.sh
-# by B Contreras Moreira 2018-20
+# by B Contreras Moreira 2018-21
 #
 # http://www.ebi.ac.uk/seqdb/confluence/display/EnsGen/Core+Statistics+Pipeline
 #
@@ -17,14 +17,13 @@ use Getopt::Long;
 ##############################################################################
 
 my $hive_db_cmd = 'mysql-ens-hive-prod-2-ensrw';
-my ($overwrite,$full) = (0,0);
+my ($overwrite) = (0);
 my ($help,$reg_file,@species,$species_cmd,$ensembl_version);
 my ($hive_args,$hive_url,$hive_db);      
 
 GetOptions(	
 	"help|?" => \$help,
 	"overwrite|w" => \$overwrite,
-	"full|f" => \$full,
 	"version|v=s" => \$ensembl_version,
 	"species|s=s" => \@species,
 	"hivecmd|H=s" => \$hive_db_cmd,    
@@ -39,7 +38,6 @@ sub help_message {
 	"-v next Ensembl version                (required, example: -v 95)\n".
 	"-R registry file, can be env variable  (required, example: -R \$p2panreg)\n".
 	"-H hive database command               (optional, default: $hive_db_cmd)\n".
-	"-f run full pipeline                   (optional, by default minimal pipeline is ran)\n".
 	"-w over-write db (hive_force_init)     (optional, useful when a previous run failed)\n";
 	exit(0);
 }
@@ -62,22 +60,16 @@ else{ die "# EXIT : need a valid -s species, such as -s arabidopsis_thaliana -s 
 if(!$reg_file || !-e $reg_file){ die "# EXIT : need a valid -R file, such as -R \$p2panreg\n" }
 
 chomp( $hive_args = `$hive_db_cmd details script` );
-$hive_db = $ENV{'USER'}."_min_core_statistics_$ensembl_version";
-if($full){
-	$hive_db = $ENV{'USER'}."_core_statistics_$ensembl_version";
-}
+$hive_db = $ENV{'USER'}."_core_statistics_$ensembl_version";
 chomp( $hive_url  = `$hive_db_cmd --details url` );
 $hive_url .= $hive_db;
 
 ## Run init script and produce a hive_db with all tasks to be carried out
 #########################################################################
 
-my $initcmd = "init_pipeline.pl Bio::EnsEMBL::EGPipeline::PipeConfig::MinCoreStatistics_conf";
-if($full){
-	$initcmd = "init_pipeline.pl Bio::EnsEMBL::EGPipeline::PipeConfig::CoreStatistics_conf";
-}
+my $initcmd = "init_pipeline.pl Bio::EnsEMBL::Production::Pipeline::PipeConfig::CoreStatistics_conf";
 
-$initcmd .= " $hive_args --registry $reg_file $species_cmd  --hive_force_init $overwrite";
+$initcmd .= " $hive_args --registry $reg_file $species_cmd --skip_metadata_check 1 --hive_force_init $overwrite";
 
 print "# $initcmd\n\n";
 
