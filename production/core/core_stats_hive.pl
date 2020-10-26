@@ -11,7 +11,8 @@ use Getopt::Long;
 # Adapted from Dan Bolser's run_the_core_stats_pipeline.sh
 # by B Contreras Moreira 2018-21
 #
-# http://www.ebi.ac.uk/seqdb/confluence/display/EnsGen/Core+Statistics+Pipeline
+# https://www.ebi.ac.uk/seqdb/confluence/display/GTI/Core+Statistics+pipeline
+# was http://www.ebi.ac.uk/seqdb/confluence/display/EnsGen/Core+Statistics+Pipeline
 #
 ## check user arguments ######################################################
 ##############################################################################
