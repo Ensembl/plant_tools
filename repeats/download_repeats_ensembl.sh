@@ -109,8 +109,7 @@ else
 	RAM=1024
 fi
 
-PERCID=$(( 100 * $MAXIDFRAC ))
-OUTFILE=${SPECIES}.${EGRELEASE}.repeats.nr${PERCID}.fasta
+OUTFILE=${SPECIES}.${EGRELEASE}.repeats.nr${MAXIDFRAC}.fasta
 
 cd-hit-est -M $RAM -c $MAXIDFRAC -l $MINLEN \
 	-i _${SPECIES}.repeats.nondeg.fasta \
