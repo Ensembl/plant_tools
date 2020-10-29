@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-# Script to download the annotated repeated elements of a selected
-# Ensembl Plants species. 
+# Script to download non-redundant annotated repeated elements 
+# of a selected species in Ensembl Plants
 
-# NOTE: required binaries: wget, bedtools, sort, perl, mysql, cd-hit-est
+# Required binaries: wget, sort, perl, mysql, bedtools, cd-hit-est
 
 # Copyright [2020] EMBL-European Bioinformatics Institute
 
