@@ -123,7 +123,7 @@ else
 fi
 
 ## 10) clean temp files
-if [ -z "$DEBUG" ]; then
+if [ -z "$DEBUG" ] || [ "$DEBUG" -eq "0" ]; then
 	echo
 	echo "# removing temp files"; 
 	rm _${SPECIES}.*.bed _${SPECIES}.*.fasta _${SPECIES}.*.fai ${SPECIES}.*.clstr
