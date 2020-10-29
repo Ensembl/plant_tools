@@ -93,12 +93,12 @@ wget -c $URL -O- | gunzip > _${SPECIES}.toplevel.fasta
 bedtools getfasta -name -fi _${SPECIES}.toplevel.fasta -bed _${SPECIES}.repeats.bed >\
 	_${SPECIES}.repeats.fasta
 
-## 8) eliminate degenerate (MAXDEGENPERC) 
+## 8) eliminate degenerate (MAXDEGENPERC) repeat sequences 
 cat _${SPECIES}.repeats.fasta | \
 	perl -slne 'if(/^(>.*)/){$h=$1} else {$fa{$h}.=$_} END{ foreach $h (keys(%fa)){ $l=length($fa{$h}); $dg=($fa{$h}=~tr/Nn//); print "$h\n$fa{$h}" if(100*$dg/$l<=$maxdeg) }}' \
 	-- -maxdeg=$MAXDEGENPERC > _${SPECIES}.repeats.nondeg.fasta
 
-## 9) eliminate short and redundant sequences
+## 9) eliminate short & redundant sequences
 if [[ $# -eq 2 ]] ; then
 	THREADS=$2
 else
@@ -115,7 +115,7 @@ if [ -z "$DEBUG" ]; then
 	rm _${SPECIES}.*.bed _${SPECIES}.*.fasta _${SPECIES}.*.fai ${SPECIES}.*.clstr
 fi
 
-# 12) print outfile name
+# 11) print outfile name
 echo
 echo "# output: " ${SPECIES}.${EGRELEASE}.repeats.nr.fasta
 
