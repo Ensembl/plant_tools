@@ -11,7 +11,7 @@
 # http://www.ensembl.org/info/docs/api/index.html
 
 if [[ $# -eq 0 ]] ; then
-	echo "# example usage: $0 arabidopsis_thaliana [n of threads]"
+	echo "# example usage: $0 arabidopsis_thaliana [MB RAM]"
 	exit 0
 else
 	SPECIES=$1
@@ -21,7 +21,7 @@ fi
 MINLEN=90
 MAXDEGENPERC=10
 MAXIDFRAC=0.95
-DEBUG=1
+DEBUG=0
 
 # SERVER DETAILS
 FTPSERVER="ftp://ftp.ensemblgenomes.org/pub"
@@ -62,7 +62,7 @@ mysql --host $SERVER --user $USER --port $PORT $SPECIESCORE -Nb -e \
 	WHERE r.seq_region_id=sr.seq_region_id \
 	AND r.repeat_consensus_id=rc.repeat_consensus_id \
 	AND (r.seq_region_end-r.seq_region_start+1) > $MINLEN" | \
-	sort -k1,1 -k2,2n > _${SPECIES}.repeats1.bed
+	sort -u -k1,1 -k2,2n > _${SPECIES}.repeats1.bed
 
 ## 4) retrieve 1-based coords of genes
 mysql --host $SERVER --user $USER --port $PORT $SPECIESCORE -Nb -e \
@@ -86,8 +86,12 @@ fi
 ## 6) download and uncompress genomic sequence 
 FASTA="*${SPECIES^}*.dna.toplevel.fa.gz"
 URL="${FTPSERVER}/${DIV}/current/fasta/${SPECIES}/dna/${FASTA}"
-echo "# downloading $URL"
-wget -c $URL -O- | gunzip > _${SPECIES}.toplevel.fasta
+if [ ! -s  _${SPECIES}.toplevel.fasta ]; then
+	echo "# downloading $URL"
+	wget -c $URL -O- | gunzip > _${SPECIES}.toplevel.fasta
+else
+	echo "# re-using _${SPECIES}.toplevel.fasta"
+fi
 
 ## 7) extract repeat sequences 
 bedtools getfasta -name -fi _${SPECIES}.toplevel.fasta -bed _${SPECIES}.repeats.bed >\
@@ -100,23 +104,30 @@ cat _${SPECIES}.repeats.fasta | \
 
 ## 9) eliminate short & redundant sequences
 if [[ $# -eq 2 ]] ; then
-	THREADS=$2
+	RAM=$2
 else
-	THREADS=1
+	RAM=1024
 fi
 
-cd-hit-est -M 1024 -T $THREADS -c $MAXIDFRAC -l $MINLEN \
+PERCID=$(( 100 * $MAXIDFRAC ))
+OUTFILE=${SPECIES}.${EGRELEASE}.repeats.nr${PERCID}.fasta
+
+cd-hit-est -M $RAM -c $MAXIDFRAC -l $MINLEN \
 	-i _${SPECIES}.repeats.nondeg.fasta \
-	-o ${SPECIES}.${EGRELEASE}.repeats.nr.fasta
+	-o $OUTFILE
+
+if [ -s "$OUTFILE" ]; then
+	echo "# output: $OUTFILE"
+else
+	echo "# job failed, temp files conserved"
+	exit 3
+fi
 
 ## 10) clean temp files
-if [ -z "$DEBUG" ]; then 
+if [ -z "$DEBUG" ]; then
+	echo
 	echo "# removing temp files"; 
 	rm _${SPECIES}.*.bed _${SPECIES}.*.fasta _${SPECIES}.*.fai ${SPECIES}.*.clstr
 fi
-
-# 11) print outfile name
-echo
-echo "# output: " ${SPECIES}.${EGRELEASE}.repeats.nr.fasta
 
 exit 0
