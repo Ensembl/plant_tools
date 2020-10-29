@@ -21,6 +21,7 @@ fi
 MINLEN=90
 MAXDEGENPERC=10
 MAXIDFRAC=0.95
+DEBUG=1
 
 # SERVER DETAILS
 FTPSERVER="ftp://ftp.ensemblgenomes.org/pub"
@@ -45,6 +46,8 @@ SPECIESCORE=$(mysql --host $SERVER --user $USER --port $PORT \
 if [ -z "$SPECIESCORE" ]; then
 	echo "# ERROR: cannot find species $SPECIES"
 	exit 1
+else
+	echo "# Ensembl core db: $SPECIESCORE";
 fi
 
 ## 3) retrieve 1-based coords of repeats
@@ -58,42 +61,44 @@ mysql --host $SERVER --user $USER --port $PORT $SPECIESCORE -Nb -e \
 	FROM repeat_feature r JOIN seq_region sr JOIN repeat_consensus rc \
 	WHERE r.seq_region_id=sr.seq_region_id \
 	AND r.repeat_consensus_id=rc.repeat_consensus_id \
-	AND (r.seq_region_end-r.seq_region_start+1) > $MINLEN \
-	ORDER BY sr.name,r.seq_region_start" > _${SPECIES}.repeats.bed
+	AND (r.seq_region_end-r.seq_region_start+1) > $MINLEN" | \
+	sort -k1,1 -k2,2n > _${SPECIES}.repeats1.bed
 
-## 4) retrieve 1-based coords of genes 
+## 4) retrieve 1-based coords of genes
 mysql --host $SERVER --user $USER --port $PORT $SPECIESCORE -Nb -e \
 	"SELECT sr.name,g.seq_region_start,g.seq_region_end,g.stable_id \
 	FROM gene g JOIN seq_region sr \
-	WHERE g.seq_region_id=sr.seq_region_id \
-	ORDER BY sr.name,g.seq_region_start" > _${SPECIES}.genes.bed
+	WHERE g.seq_region_id=sr.seq_region_id" | \
+	sort -k1,1 -k2,2n > _${SPECIES}.genes1.bed
 
-## 5) curate repeats by substracting annotated genes
-bedtools subtract -a _${SPECIES}.repeats.bed -b _${SPECIES}.genes.bed >\
-	_${SPECIES}.repeats.curated.bed
-
-
-## 6) sort and convert to 0-based BED
-sort -k1,1 -k2,2n _${SPECIES}.repeats.curated.bed | \
+## 5) curate repeats by substracting annotated genes and
+##    convert to 0-based BED format
+bedtools subtract -sorted \
+	-a _${SPECIES}.repeats1.bed -b _${SPECIES}.genes1.bed | \
 	perl -lane '$F[1]-=1; print join("\t",@F)' >\
-	_${SPECIES}.repeats.sorted.bed
+	_${SPECIES}.repeats.bed
 
-## 7) download and uncompress genomic sequence 
+if [ ! -s  _${SPECIES}.repeats.bed ]; then
+	echo "# no repeats found"
+	exit 2
+fi
+
+## 6) download and uncompress genomic sequence 
 FASTA="*${SPECIES^}*.dna.toplevel.fa.gz"
 URL="${FTPSERVER}/${DIV}/current/fasta/${SPECIES}/dna/${FASTA}"
 echo "# downloading $URL"
 wget -c $URL -O- | gunzip > _${SPECIES}.toplevel.fasta
 
-## 8) extract repeat sequences 
-bedtools getfasta -name -fi _${SPECIES}.toplevel.fasta -bed _${SPECIES}.repeats.sorted.bed >\
+## 7) extract repeat sequences 
+bedtools getfasta -name -fi _${SPECIES}.toplevel.fasta -bed _${SPECIES}.repeats.bed >\
 	_${SPECIES}.repeats.fasta
 
-## 9) eliminate degenerate (MAXDEGENPERC) 
+## 8) eliminate degenerate (MAXDEGENPERC) 
 cat _${SPECIES}.repeats.fasta | \
 	perl -slne 'if(/^(>.*)/){$h=$1} else {$fa{$h}.=$_} END{ foreach $h (keys(%fa)){ $l=length($fa{$h}); $dg=($fa{$h}=~tr/Nn//); print "$h\n$fa{$h}" if(100*$dg/$l<=$maxdeg) }}' \
 	-- -maxdeg=$MAXDEGENPERC > _${SPECIES}.repeats.nondeg.fasta
 
-# 10) eliminate short and redundant sequences
+## 9) eliminate short and redundant sequences
 if [[ $# -eq 2 ]] ; then
 	THREADS=$2
 else
@@ -104,8 +109,11 @@ cd-hit-est -M 1024 -T $THREADS -c $MAXIDFRAC -l $MINLEN \
 	-i _${SPECIES}.repeats.nondeg.fasta \
 	-o ${SPECIES}.${EGRELEASE}.repeats.nr.fasta
 
-# 11) clean temp files
-rm _${SPECIES}.*.bed _${SPECIES}.*.fasta _${SPECIES}.*.fai ${SPECIES}.*.clstr
+## 10) clean temp files
+if [ -z "$DEBUG" ]; then 
+	echo "# removing temp files"; 
+	rm _${SPECIES}.*.bed _${SPECIES}.*.fasta _${SPECIES}.*.fai ${SPECIES}.*.clstr
+fi
 
 # 12) print outfile name
 echo
