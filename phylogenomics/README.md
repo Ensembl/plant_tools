@@ -142,7 +142,5 @@ Left) all sequences; right) after excluding unclustered sequences (singletons).*
 
 *Fig. 3. Occupancy of pan-gene clusters of 11 Oryza species, generated with get_homologues/parse_pangenome_matrix.pl*
 
-![POCP heatmap](./Oryza/plots/POCP.matrix_heatmap.svg)
-
-*Fig. 4. Percent conserved sequence matrix of 11 Oryza species, generated with get_homologues/plot_matrix_heatmap.sh*
-
+<!--![POCP heatmap](./Oryza/plots/POCP.matrix_heatmap.svg)
+*Fig. 4. Percent conserved sequence matrix of 11 Oryza species, generated with get_homologues/plot_matrix_heatmap.sh* -->
