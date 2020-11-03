@@ -152,7 +152,7 @@ wc Pfam2remove.list
 
 ## Producing a nonredundant TE library
 
-Finally, a non-redundant library of plant TEs was produced as follows:
+Finally, a non-redundant library of plant TEs was produced as follows, which can be downloaded at https://github.com/Ensembl/plant_tools/releases/download/Jun2020/nrTEplantsJune2020.fna.bz2:
 
 ```
 ./select_TE_clusters.pl log.annot clusters2remove.list nrTEplantsApril2020.fna > log.select
@@ -174,7 +174,7 @@ sunrep1.0       43
 
 Check log.select for the complete report of the resulting nr library.
 
-## Clustering sequences from TE libraries with CD-HIT
+# Control: clustering sequences from TE libraries with CD-HIT
 
 In order to put the previous results in context, a similar clustering experiment, including only TEs and no cDNAs, was carried out with [CD-HIT](http://weizhongli-lab.org/cd-hit):
 
