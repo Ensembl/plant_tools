@@ -16,7 +16,7 @@ This document explains how to produce a library of non-redundant transposable el
 |[SunflowerTE](https://www.sunflowergenome.org/annotations-data)|https://www.sunflowergenome.org/annotations-data/assets/data/annotations/transposons/Ha412v1r1_transposons_v1.0.fasta.gz|73627|https://onlinelibrary.wiley.com/doi/full/10.1111/j.1365-313X.2012.05072.x|
 |[SUNREP](pgagl.agr.unipi.it/sequence-repository)|http://pgagl.agr.unipi.it/wp-content/uploads/Plantgenetgenomlab/sunrep_1_0.zip|47441|https://bmcgenomics.biomedcentral.com/articles/10.1186/1471-2164-14-686|
 |MelonTE||1560|https://bmcgenomics.biomedcentral.com/articles/10.1186/1471-2164-14-686|
-|[RosaTE](https://iris.angers.inra.fr/obh/downloads)|https://iris.angers.inra.fr/obh/downloads/OBDH_1.0_TE.gff3.gz|355304|
+|[RosaTE](https://iris.angers.inra.fr/obh/downloads)|https://iris.angers.inra.fr/obh/downloads/OBDH_1.0_TE.gff3.gz|355304|https://www.nature.com/articles/s41477-018-0166-1|
 
 
 ## cDNA sequences
