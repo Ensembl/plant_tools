@@ -1,4 +1,4 @@
-# Negative controls are Pfam domains found in NLR proteins by Carla C Filippi.
+# Negative controls are Pfam domains found in NLR proteins by Carla V Filippi.
 # Among those is PF02892 (zf-BED), which according to Pfam can be found in transposases
 PF00078 pos_control (Reverse transcriptase)
 PF00098 pos_control (zinc knucklefrom retroviral gag)
