@@ -1,7 +1,13 @@
 
 # nrTEplants
 
-This document explains how to produce a library of non-redundant transposable elements (TE) found in plants and annotated in the following libraries, contained in FASTA format in folder [repeats/](./repeats/): 
+This document explains the steps required to produce the library of non-redundant transposable elements (TE) of plants, nrTEplants. 
+
+The current release can be downloaded from https://github.com/Ensembl/plant_tools/releases/tag/v0.3
+
+## TE libraries
+
+nrTEplants contains repeated sequences curated and annotated in the following libraries, contained in FASTA format in folder [repeats/](./repeats/): 
 
 |library|files downloaded|sequences|publication|
 |-------|----------------|---------|-----------|
@@ -152,7 +158,7 @@ wc Pfam2remove.list
 
 ## Producing a nonredundant TE library
 
-Finally, a non-redundant library of plant TEs was produced as follows, which can be downloaded at https://github.com/Ensembl/plant_tools/releases/download/Jun2020/nrTEplantsJune2020.fna.bz2:
+Finally, a non-redundant library of plant TEs was produced as follows, which can be downloaded at https://github.com/Ensembl/plant_tools/releases/tag/v0.3:
 
 ```
 ./select_TE_clusters.pl log.annot clusters2remove.list nrTEplantsApril2020.fna > log.select
