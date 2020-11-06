@@ -28,7 +28,6 @@ use Getopt::Long qw(:config no_ignore_case);
 my $hive_db_cmd = 'mysql-ens-hive-prod-2-ensrw';
 my $libpath = '/nfs/panda/ensemblgenomes/external/data/repeats_libraries/';
 my $nrTEplants_lib = $libpath . 'nrTEplants/nrTEplantsJune2020.fna'; 
-#my $nrTEplants_lib = $libpath . 'nrTEplants/nrTEplantsApril2020.fna';
 
 my ($rerun,$overwrite,$nrTEplants,$sensitivity) = (0,0,0,'');
 my ($help,$reg_file,@species,$species_cmd,$ensembl_version,$pipeline_dir);
@@ -44,7 +43,7 @@ GetOptions(
 	"regfile|R=s" => \$reg_file,
 	"pipedir|P=s" => \$pipeline_dir,
 	"prodb|D=s"   => \$prodbname,
-	"nrplants|n"  => $nrTEplants,
+	"nrplants|n"  => \$nrTEplants,
 	"sensitivity|T=s" => \$sensitivity
 ) || help_message(); 
 
@@ -110,7 +109,7 @@ if(defined($sensitivity) && $sensitivity ne ''){
 	$initcmd .= "-repeatmasker_sensitivity all=$sensitivity ";
 }
 
-if(defined($nrTEplants)){
+if($nrTEplants){
 	$initcmd .= "-repeatmasker_library all=$nrTEplants_lib ";
 	$initcmd .= "-repeatmasker_logic_name all=repeatmask_nrplants ";
 
