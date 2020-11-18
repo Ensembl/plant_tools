@@ -17,6 +17,8 @@ use Getopt::Long;
 ## check user arguments ######################################################
 ##############################################################################
 
+my $reposource = 'production'; #EG
+
 my $hive_db_cmd = 'mysql-ens-hive-prod-2-ensrw';
 my ($overwrite) = (0);
 my ($help,$reg_file,@species,$species_cmd,$ensembl_version);
@@ -61,6 +63,8 @@ else{ die "# EXIT : need a valid -s species, such as -s arabidopsis_thaliana -s 
 if(!$reg_file || !-e $reg_file){ die "# EXIT : need a valid -R file, such as -R \$p2panreg\n" }
 
 chomp( $hive_args = `$hive_db_cmd details script` );
+if($reposource eq 'production'){ $hive_args =~ s/--pass/--password/ }
+
 $hive_db = $ENV{'USER'}."_core_statistics_$ensembl_version";
 chomp( $hive_url  = `$hive_db_cmd --details url` );
 $hive_url .= $hive_db;
@@ -68,7 +72,11 @@ $hive_url .= $hive_db;
 ## Run init script and produce a hive_db with all tasks to be carried out
 #########################################################################
 
-my $initcmd = "init_pipeline.pl Bio::EnsEMBL::Production::Pipeline::PipeConfig::CoreStatistics_conf";
+my $initcmd = "init_pipeline.pl Bio::EnsEMBL::EGPipeline::PipeConfig::MinCoreStatistics_conf";
+if($reposource eq 'production'){
+	$initcmd = 
+		"init_pipeline.pl Bio::EnsEMBL::Production::Pipeline::PipeConfig::CoreStatistics_conf";
+}
 
 $initcmd .= " $hive_args --registry $reg_file $species_cmd --skip_metadata_check 1 --hive_force_init $overwrite";
 
