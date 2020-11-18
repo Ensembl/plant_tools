@@ -17,7 +17,7 @@ use Getopt::Long;
 ## check user arguments ######################################################
 ##############################################################################
 
-my $reposource = 'production'; #EG
+my $reposource = 'EG'; #'production';
 
 my $hive_db_cmd = 'mysql-ens-hive-prod-2-ensrw';
 my ($overwrite) = (0);
@@ -65,7 +65,9 @@ if(!$reg_file || !-e $reg_file){ die "# EXIT : need a valid -R file, such as -R 
 chomp( $hive_args = `$hive_db_cmd details script` );
 if($reposource eq 'production'){ $hive_args =~ s/--pass/--password/ }
 
-$hive_db = $ENV{'USER'}."_core_statistics_$ensembl_version";
+$hive_db = $ENV{'USER'}."_min_core_statistics_$ensembl_version";
+if($reposource eq 'production'){ $hive_db = $ENV{'USER'}."_core_statistics_$ensembl_version"; }
+
 chomp( $hive_url  = `$hive_db_cmd --details url` );
 $hive_url .= $hive_db;
 
