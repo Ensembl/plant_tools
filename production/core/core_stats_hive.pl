@@ -17,7 +17,7 @@ use Getopt::Long;
 ## check user arguments ######################################################
 ##############################################################################
 
-my $reposource = 'EG'; #'production';
+my $reposource = 'production'; #production|EG
 
 my $hive_db_cmd = 'mysql-ens-hive-prod-2-ensrw';
 my ($overwrite) = (0);
