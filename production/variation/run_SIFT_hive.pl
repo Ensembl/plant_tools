@@ -29,7 +29,7 @@ use Bio::EnsEMBL::Registry;
 
 my (%opts,$species,$protein_fasta_file,$ensembl_version,$assembly);
 my ($pipeline_dir,$reg_file,$hive_args,$hive_db,$hive_url,$argsline);
-my ($rerun,$update,$overwrite,$hive_path) = (0,0,0);
+my ($rerun,$update,$overwrite,$hive_path,$onlyinit) = (0,0,0,0);
 my ($blastdb_release,$sift_version) = ('','');
 my $hive_db_cmd = 'mysql-ens-hive-prod-2-ensrw';
 my $ensemblpath = $ENV{'ENSAPIPATH'};
@@ -37,7 +37,7 @@ my $blastbin = $ENV{'blastbin'} || '';
 my $blastdb = $ENV{'uniref90'} || '';
 my $siftdir = $ENV{'sift_dir'} || '';
 
-getopts('huwrb:p:s:v:R:H:P:a:', \%opts);
+getopts('hiuwrb:p:s:v:R:H:P:a:', \%opts);
 
 if(($opts{'h'})||(scalar(keys(%opts))==0)){
   print "\nusage: $0 [options]\n\n";
@@ -50,6 +50,7 @@ if(($opts{'h'})||(scalar(keys(%opts))==0)){
   print "-H hive database command                       (optional, default: $hive_db_cmd)\n";
   print "-p path to BLAST+ binaries                     (optional, default: $blastbin)\n";
   print "-b path to BLASTDB fasta file                  (optional, default: $blastdb)\n";
+  print "-i print init command and exit                 (optional)\n";
   print "-u update SIFT predictions [UPDATE]            (optional, default: reset and predict from scratch [FULL])\n";
   print "-w over-write db (hive_force_init)             (optional, useful when a previous run failed)\n";                             
   print "-r re-run jump to beekeper.pl                  (optional, default: run init script from scratch)\n\n";
@@ -115,12 +116,15 @@ if($opts{'w'}){ $overwrite = 1 }
 
 if($opts{'u'}){ $update = 1 }
 
+if($opts{'a'}){ $onlyinit = 1 }
 
-$argsline = sprintf("%s -s %s -s %s -f %s -v %s -R %s -H %s -P %s -p %s -b %s -u %d -w %d -r %d",
+
+$argsline = 
+  sprintf("%s -s %s -s %s -f %s -v %s -R %s -H %s -P %s -p %s -b %s -u %d -w %d -r %d -i %d",
   $0, $species, $assembly, $protein_fasta_file,  
   $ensembl_version, $reg_file, $hive_db_cmd, $pipeline_dir, 
   $blastbin,$blastdb,
-  $update, $overwrite, $rerun );
+  $update, $overwrite, $rerun, $onlyinit );
 
 print "# $argsline\n\n";
 
@@ -202,9 +206,11 @@ my $initcmd = "init_pipeline.pl Bio::EnsEMBL::Variation::Pipeline::ProteinFuncti
 	"--hive_force_init $overwrite ";
 
 if($update){ $initcmd .= "-sift_run_type UPDATE " }
-else{ $initcmd .= "-sift_run_type FULL " }
+else{ $initcmd .= "-sift_run_type 1 " } # FULL does not work
 
 print "# $initcmd\n\n";
+
+exit(1) if($onlyinit==1);
 
 if($rerun == 0){
 
