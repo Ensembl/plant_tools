@@ -6,7 +6,7 @@ use Bio::EnsEMBL::DBSQL::DBAdaptor;
 use feature qw /say/;
 
 if(!$ARGV[2]){
-	die "# usage: $0 <registry> <species> <gene stable id>\n";
+	die "# usage: $0 <registry> <species> <transcript stable_id>\n";
 }
 
 my ($regfile,$species,$stable_id) = @ARGV;
