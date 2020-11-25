@@ -116,7 +116,7 @@ if($opts{'w'}){ $overwrite = 1 }
 
 if($opts{'u'}){ $update = 1 }
 
-if($opts{'a'}){ $onlyinit = 1 }
+if($opts{'i'}){ $onlyinit = 1 }
 
 
 $argsline = 
