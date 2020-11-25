@@ -206,7 +206,7 @@ my $initcmd = "init_pipeline.pl Bio::EnsEMBL::Variation::Pipeline::ProteinFuncti
 	"--hive_force_init $overwrite ";
 
 if($update){ $initcmd .= "-sift_run_type UPDATE " }
-else{ $initcmd .= "-sift_run_type 1 " } # FULL does not work
+else{ $initcmd .= "-sift_run_type FULL " }
 
 print "# $initcmd\n\n";
 
