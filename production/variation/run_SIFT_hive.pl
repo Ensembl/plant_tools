@@ -19,7 +19,7 @@ use Bio::EnsEMBL::Registry;
 # Uses env $ENSAPIPATH to locate ensembl-hive API
 # and env $USER to create hive job names 
 #
-# B Contreras Moreira EMBL-EBI 2019
+# B Contreras Moreira EMBL-EBI 2019-20
 #
 # https://www.ebi.ac.uk/seqdb/confluence/display/EnsGen/Running+the+Sift+pipeline
 # https://www.ebi.ac.uk/seqdb/confluence/display/EV/Protein+function+pipeline
@@ -31,7 +31,7 @@ my (%opts,$species,$protein_fasta_file,$ensembl_version);
 my ($pipeline_dir,$reg_file,$hive_args,$hive_db,$hive_url,$argsline);
 my ($rerun,$update,$overwrite,$hive_path) = (0,0,0);
 my ($blastdb_release,$sift_version) = ('','');
-my $hive_db_cmd = 'mysql-eg-hive-ensrw';
+my $hive_db_cmd = 'mysql-ens-hive-prod-2-ensrw';
 my $ensemblpath = $ENV{'ENSAPIPATH'};
 my $blastbin = $ENV{'blastbin'} || '';
 my $blastdb = $ENV{'uniref90'} || '';
