@@ -27,7 +27,7 @@ use Bio::EnsEMBL::Registry;
 ## check user arguments ######################################################
 ##############################################################################
 
-my (%opts,$species,$protein_fasta_file,$ensembl_version);
+my (%opts,$species,$protein_fasta_file,$ensembl_version,$assembly);
 my ($pipeline_dir,$reg_file,$hive_args,$hive_db,$hive_url,$argsline);
 my ($rerun,$update,$overwrite,$hive_path) = (0,0,0);
 my ($blastdb_release,$sift_version) = ('','');
@@ -37,13 +37,14 @@ my $blastbin = $ENV{'blastbin'} || '';
 my $blastdb = $ENV{'uniref90'} || '';
 my $siftdir = $ENV{'sift_dir'} || '';
 
-getopts('huwrb:p:s:v:R:H:P:', \%opts);
+getopts('huwrb:p:s:v:R:H:P:a:', \%opts);
 
 if(($opts{'h'})||(scalar(keys(%opts))==0)){
   print "\nusage: $0 [options]\n\n";
   print "-h this message\n";
-  print "-s species_name                                (required, example: -s arabidopsis_thaliana)\n";
+  print "-s species_name                                (required, example: -s oryza_sativa)\n";
   print "-v next Ensembl version                        (required, example: -v 95)\n";
+  print "-a assembly name, used in hive db name         (required, example: -a IRGSC)\n";
   print "-R registry file, can be env variable          (required, example: -R \$p2panreg)\n";
   print "-P folder to put pipeline files, can be env    (required, example: -P \$siftmp)\n";
   print "-H hive database command                       (optional, default: $hive_db_cmd)\n";
@@ -67,9 +68,12 @@ if($opts{'v'}){
 }
 else{ die "# EXIT : need a valid -v version, such as -v 95\n" }
 
+if($opts{'a'}){ $assembly = lc($opts{'a'}) }
+else{ die "# EXIT : need a valid assembly name, one word\n" }
+
 if($opts{'s'}){
         $species = $opts{'s'};
-        $hive_db = $ENV{'USER'}."_protein_function_$species";
+        $hive_db = $ENV{'USER'}."_ehive_protein_function_$ensembl_version\_$assembly\_$species";
 }
 else{ die "# EXIT : need a valid -s species_name, such as -s arabidopsis_thaliana\n" }
 
@@ -99,7 +103,7 @@ if($opts{'b'}){
 if($opts{'H'}){ $hive_db_cmd = $opts{'H'} }
 chomp( $hive_args = `$hive_db_cmd details script` );
 if($hive_args =~ m/--host (\S+) --port (\d+) --user (\S+) --pass (\S+)/){
-	$hive_args = "-pipeline_db -host=$1 --pipeline_db -port=$2 --pipeline_db -user=$3 -password $4"; 	
+	$hive_args = "-pipeline_db -host=$1 --pipeline_db -port=$2 --pipeline_db -user=$3 -password $4"
 }
 
 chomp( $hive_url  = `$hive_db_cmd --details url` );
@@ -112,8 +116,8 @@ if($opts{'w'}){ $overwrite = 1 }
 if($opts{'u'}){ $update = 1 }
 
 
-$argsline = sprintf("%s -s %s -f %s -v %s -R %s -H %s -P %s -p %s -b %s -u %d -w %d -r %d",
-  $0, $species, $protein_fasta_file,  
+$argsline = sprintf("%s -s %s -s %s -f %s -v %s -R %s -H %s -P %s -p %s -b %s -u %d -w %d -r %d",
+  $0, $species, $assembly, $protein_fasta_file,  
   $ensembl_version, $reg_file, $hive_db_cmd, $pipeline_dir, 
   $blastbin,$blastdb,
   $update, $overwrite, $rerun );
@@ -186,16 +190,19 @@ if($meta_adaptor->key_value_exists( 'sift_version', $sift_version )) {
 #########################################################################
 
 my $initcmd = "init_pipeline.pl Bio::EnsEMBL::Variation::Pipeline::ProteinFunction::ProteinFunction_conf ".
-    	"$hive_args ".
+	"$hive_args ".
 	"-hive_root_dir $hive_path ".
-    	"-ensembl_registry $reg_file -species $species ".
-    	"-pipeline_dir $pipeline_dir -sift_working $pipeline_dir ".
+	"-ensembl_registry $reg_file -species $species ".
+	"-pipeline_dir $pipeline_dir -sift_working $pipeline_dir ".
+	"-assembly $assembly ".
+	"-ensembl_release $ensembl_version ".
 	"-sift_dir $siftdir ".
 	"-ncbi_dir $blastbin -blastdb $blastdb ".
-	"-dbnsfp_run_type 0 -cadd_run_type 0 " . # only supported in human
+	#"-dbnsfp_run_type 0 -cadd_run_type 0 " . # only supported in human
 	"--hive_force_init $overwrite ";
 
-if(!$update){ $initcmd .= "-sift_run_type 1 " }
+if($update){ $initcmd .= "-sift_run_type UPDATE " }
+else{ $initcmd .= "-sift_run_type FULL " }
 
 print "# $initcmd\n\n";
 
