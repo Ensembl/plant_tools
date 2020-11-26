@@ -18,4 +18,3 @@ export ENSCODE=
 
 PERL5LIB=${ENSCODE}/ensembl/modules:${ENSCODE}/ensembl-analysis/modules:${ENSCODE}/ensembl-hive/modules:${ENSCODE}/ensembl-killlist/modules:${ENSCODE}/ensembl-production/modules:${ENSCODE}/ensembl-analysis/scripts:${ENSCODE}/ensembl-io/modules:${ENSCODE}/ensembl-analysis/scripts/buildchecks/:${ENSCODE}/ensembl-variation/modules:${ENSCODE}/ensembl-taxonomy/modules:$BIOPERL_LIB
 
-See example at [Confluence](https://www.ebi.ac.uk/seqdb/confluence/display/EnsGen/Loading+assemblies+and+gene+annotation+in+plants#Loadingassembliesandgeneannotationinplants-LoadinganassemblyfromNCBI/RefSeqwithnogeneannotation)
