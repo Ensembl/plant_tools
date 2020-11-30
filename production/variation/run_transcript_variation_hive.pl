@@ -23,13 +23,13 @@ use Bio::EnsEMBL::Registry;
 my (%opts,$species_db,$species,$ensembl_version,$prod_db_cmd);
 my ($pipeline_dir,$reg_file,$hive_args,$hive_db,$hive_url,$argsline);
 my ($rerun,$overwrite,$hive_path,$var_path) = (0,0);
-my $hive_db_cmd = 'mysql-eg-hive-ensrw';
+my $hive_db_cmd = 'mysql-ens-hive-prod-2-ensrw';
 my $ensemblpath = $ENV{'ENSAPIPATH'};
 
 my $max_distance = 500; 
 # as in Francesc Montardit 2018 MSc thesis on brachy, prunus and A.thaliana
 # The default 'max distance to transcript' seems to be about 5k
-# Within this distance the variation will be called 'updstream or downstream' 
+# Within this distance the variation will be called 'upstream or downstream' 
 # Dan Bolser had 200, as a 'default' run for rice showed that a max_distance of
 # 200 gives approximately 3 times as many up/down TVs as genic TVs
 
