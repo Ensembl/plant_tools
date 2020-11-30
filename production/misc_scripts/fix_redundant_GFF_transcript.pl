@@ -45,7 +45,7 @@ while(<GFF>){
 		elsif($feat_type eq 'mRNA'){
 			$isoform{ $ID }++;
             $mrnaID = $ID .'.'. $isoform{ $ID };
-			$gffdata[8] =~ s/ID=[^;]+/ID=$mrnaID/;                              
+			$gffdata[8] =~ s/ID=[^;]+/ID=$mrnaID/; 
 		}
 		elsif($feat_type eq 'exon'){
 			$gffdata[8] =~ s/ID=[^:]+/ID=$mrnaID/;
@@ -53,7 +53,7 @@ while(<GFF>){
     	}
 		elsif($feat_type eq 'CDS'){
 			$gffdata[8] =~ s/ID=[^:]+/ID=$mrnaID/;
-			$gffdata[8] =~ s/Parent=[^;\n]+/Parent=$mrnaID/;
+			$gffdata[8] =~ s/Parent=[^;]\n+/Parent=$mrnaID/;
 		}
 	}
 
