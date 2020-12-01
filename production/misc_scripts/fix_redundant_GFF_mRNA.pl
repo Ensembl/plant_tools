@@ -53,7 +53,7 @@ while(<GFF>){
 			$isoform{ $cdsID }++;
 			$cdsID .= '.'. $isoform{ $cdsID };
 			$gffdata[8] =~ s/ID=[^;]+/ID=$cdsID/;
-			$gffdata[8] =~ s/Parent=[^;]\n+/Parent=$mrnaID/;
+			$gffdata[8] =~ s/Parent=[^;\n]+/Parent=$mrnaID/;
 		}
 	}
 
