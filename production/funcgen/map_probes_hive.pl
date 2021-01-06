@@ -25,7 +25,7 @@ my ($funcgenpath,$sqlpath,$species);
 my $clean_tmp = 1;
 my $overwrite = 0;
 my $only_metadata = 0;
-my $hive_db_cmd = 'mysql-eg-hive-ensrw';
+my $hive_db_cmd = 'mysql-ens-hive-prod-2-ensrw';
 
 getopts('hMnws:d:v:p:R:H:P:', \%opts);
 
