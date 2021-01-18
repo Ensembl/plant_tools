@@ -189,7 +189,7 @@ while(<GFF>){
 		#	exit(0);
 		#}
 		
-		if($gffdata[8] =~ m/ID=gene:/){ 
+		if($gffdata[8] =~ m/^ID=gene:/){ 
 			print "# ERROR: please edit the GFF file to remove redundant ID names:\n$_\n\n";
 			#print "# You can try: \$ perl -lne 's/ID=\\w+:/ID=/; print' <gff3file> \n\n";
 			exit(0);
