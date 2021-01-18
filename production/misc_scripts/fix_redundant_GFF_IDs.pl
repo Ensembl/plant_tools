@@ -22,26 +22,23 @@ while(<GFF>){
 	my @gffdata = split(/\t/,$_);
 
 	if($gffdata[8] && $gffdata[8] =~ m/ID=(\w+):/){ 
-		
+			
 		$feat_type = $1;	
-
+		
 		if($feat_type eq 'gene'){
 			$gffdata[8] =~ s/gene://;					
 		}
 		elsif($feat_type eq 'mRNA'){
 			$gffdata[8] =~ s/ID=mRNA:/ID=/;                              
-			$gffdata[8] =~ s/ID=transcript:/ID=/;
 			$gffdata[8] =~ s/Parent=gene:/Parent=/;
 		}
-		elsif($feat_type eq 'exon'){
+		elsif($feat_type eq 'exon'){		
 			$gffdata[8] =~ s/ID=exon:(\S+?);/ID=$1.exon;/;
 			$gffdata[8] =~ s/Parent=mRNA:/Parent=/;
-			$gffdata[8] =~ s/Parent=transcript:/Parent=/;
 		}
 		elsif($feat_type eq 'CDS'){
 			$gffdata[8] =~ s/ID=CDS:(\S+?);/ID=$1.CDS;/;
             $gffdata[8] =~ s/Parent=mRNA:/Parent=/;
-			$gffdata[8] =~ s/Parent=transcript:/Parent=/;
 		}
 	}
 
