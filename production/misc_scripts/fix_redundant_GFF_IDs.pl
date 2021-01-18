@@ -3,7 +3,7 @@ use strict;
 use warnings;
 
 # script to fix GFF files like the one below so that load GFF3 works
-# by Bruno Contreras Moreira EMBL-EBI 2018
+# by Bruno Contreras Moreira EMBL-EBI 2018-21
 
 die "# usage: $0 <GFF file>\n" if(!$ARGV[0]);
 
@@ -29,17 +29,20 @@ while(<GFF>){
 			$gffdata[8] =~ s/gene://;					
 		}
 		elsif($feat_type eq 'mRNA'){
-                        $gffdata[8] =~ s/ID=mRNA:/ID=/;                              
+			$gffdata[8] =~ s/ID=mRNA:/ID=/;                              
+			$gffdata[8] =~ s/ID=transcript:/ID=/;
 			$gffdata[8] =~ s/Parent=gene:/Parent=/;
-                }
+		}
 		elsif($feat_type eq 'exon'){
-                        $gffdata[8] =~ s/ID=exon:(\S+?);/ID=$1.exon;/;
+			$gffdata[8] =~ s/ID=exon:(\S+?);/ID=$1.exon;/;
 			$gffdata[8] =~ s/Parent=mRNA:/Parent=/;
-                }
+			$gffdata[8] =~ s/Parent=transcript:/Parent=/;
+		}
 		elsif($feat_type eq 'CDS'){
-                        $gffdata[8] =~ s/ID=CDS:(\S+?);/ID=$1.CDS;/;
-                        $gffdata[8] =~ s/Parent=mRNA:/Parent=/;
-                }
+			$gffdata[8] =~ s/ID=CDS:(\S+?);/ID=$1.CDS;/;
+            $gffdata[8] =~ s/Parent=mRNA:/Parent=/;
+			$gffdata[8] =~ s/Parent=transcript:/Parent=/;
+		}
 	}
 
 	print join("\t",@gffdata);
