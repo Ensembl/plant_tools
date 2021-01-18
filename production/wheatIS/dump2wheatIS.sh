@@ -1,25 +1,34 @@
 #!/usr/bin/env bash
 
-# usage: dump2wheatIS.sh 42
+# usage: dump2wheatIS.sh 50 <staging server>
 # produces core & otherfeatures TSV files for https://urgi.versailles.inra.fr/wheatis/
 #
 # requires $ENSAPIPATH pointing to ensembl-metadata
 #
-# by Bruno Contreras Moreira, Raphael Flores EMBL-EBI 2019-20
+# by Bruno Contreras Moreira, Raphael Flores EMBL-EBI 2019-21
 
 if [ $# -eq 0 ]; then
-	echo "# ERROR: need ensembl_genomes_version"
+	echo "# ERROR: need EnsemblGenomes version, staging server is optional"
 	exit
 fi
 
 EGRELEASE=$1
 
+if [ -z "$2" ]
+then
+	MIRRSERVER=mysql-ens-sta-3
+else
+	MIRRSERVER=$2
+fi
+
 PRODSERVER=mysql-ens-meta-prod-1
-MIRRSERVER=mysql-ens-sta-3 
 PLANTCOREDBLIST=plant_list-core-$EGRELEASE.txt
 PLANTOTHERDBLIST=plant_list-otherfeatures-$EGRELEASE.txt
 WHEATISCOREFILE=transplant-EBI-core-$EGRELEASE.tsv
 WHEATISOTHERFILE=transplant-EBI-otherfeatures-$EGRELEASE.tsv
+
+
+
 
 # make lists of plant databases in selected EGRELEASE
 export PERL5LIB=$PERL5LIB:$ENSAPIPATH/ensembl-metadata/modules/
