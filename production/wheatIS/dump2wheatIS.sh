@@ -26,8 +26,7 @@ PLANTCOREDBLIST=plant_list-core-$EGRELEASE.txt
 PLANTOTHERDBLIST=plant_list-otherfeatures-$EGRELEASE.txt
 WHEATISCOREFILE=transplant-EBI-core-$EGRELEASE.tsv
 WHEATISOTHERFILE=transplant-EBI-otherfeatures-$EGRELEASE.tsv
-
-
+ENSAPIPATH=$ENSEMBL_ROOT_DIR
 
 
 # make lists of plant databases in selected EGRELEASE
