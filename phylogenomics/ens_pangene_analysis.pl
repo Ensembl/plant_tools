@@ -17,7 +17,7 @@ use PlantCompUtils qw(
 # Produces pan-gene analyses based on clusters of orthologous genes shared by
 # species in a plant clade by querying pre-computed Compara data from Ensembl
 #
-# Copyright [2019-2020] EMBL-European Bioinformatics Institute
+# Copyright [2019-2021] EMBL-European Bioinformatics Institute
 
 # Ensembl Genomes
 my $RESTURL   = 'http://rest.ensembl.org';

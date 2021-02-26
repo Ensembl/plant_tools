@@ -1,7 +1,7 @@
 package PlantCompUtils;
 require Exporter;
 
-# Copyright [2019-2020] EMBL-European Bioinformatics Institute
+# Copyright [2019-2021] EMBL-European Bioinformatics Institute
 
 @ISA       = qw(Exporter);
 @EXPORT_OK = qw(

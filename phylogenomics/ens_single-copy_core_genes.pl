@@ -18,7 +18,7 @@ use PlantCompUtils qw(
 # by querying pre-computed Compara data from Ensembl Genomes with a reference genome.
 # Multiple copies are optionally allowed for selected or all species.
 #
-# Copyright [2019-2020] EMBL-European Bioinformatics Institute
+# Copyright [2019-2021] EMBL-European Bioinformatics Institute
 
 # Ensembl Genomes
 my $RESTURL   = 'http://rest.ensembl.org';
@@ -323,7 +323,7 @@ foreach $hom_species (@supported_species) {
     }
     elsif ( !defined( $present{$hom_species} ) && $GOC ) {
         print "# GOC not available: $hom_species\n";
-    }
+    } 
 }
 
 ## 3) print summary matrix of single-copy / core genes and compile sequence clusters

@@ -18,7 +18,7 @@ use PlantCompUtils qw(
 # Retrieves orthologous, syntenic genes (syntelogs) shared by (plant) species in clade
 # by querying pre-computed Compara data from Ensembl Genomes with a reference genome.
 #
-# Copyright [2019-2020] EMBL-European Bioinformatics Institute
+# Copyright [2019-2021] EMBL-European Bioinformatics Institute
 
 # Ensembl Genomes
 my $RESTURL   = 'http://rest.ensembl.org';
