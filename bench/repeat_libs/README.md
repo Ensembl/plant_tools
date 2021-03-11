@@ -161,7 +161,7 @@ wc Pfam2remove.list
 Finally, a non-redundant library of plant TEs was produced as follows, which can be downloaded at https://github.com/Ensembl/plant_tools/releases/tag/v0.3:
 
 ```
-./select_TE_clusters.pl log.annot clusters2remove.list nrTEplantsApril2020.fna > log.select
+./select_TE_clusters.pl log.annot clusters2remove.list nrTEplantsJun2020.fna > log.select
 
 ...
 # clusters=171104 sequences=171104
@@ -179,6 +179,8 @@ sunrep1.0       43
 ```
 
 Check log.select for the complete report of the resulting nr library.
+
+NOTE: nr sequences from the Unassigned class from TAIR10 were renamed to 'Unclassified'
 
 # Control: clustering sequences from TE libraries with CD-HIT
 
