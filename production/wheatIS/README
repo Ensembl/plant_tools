@@ -1,4 +1,4 @@
-This is the WheatIS (formerly transPLANT) dump for release XX of Ensembl Plants:
+This is the WheatIS (Wheat Information System, formerly transPLANT) dump for release XX of Ensembl Plants:
 
 ftp://ftp.ensemblgenomes.org/pub/misc_data/TransPLANT/transplant-EBI-core-XX.tsv.gz
 ftp://ftp.ensemblgenomes.org/pub/misc_data/TransPLANT/transplant-EBI-otherfeatures-XX.tsv.gz
@@ -17,3 +17,6 @@ Last up-to-date version of the format is available here: https://urgi.versailles
 For details on how these are produced check the script:
 
 https://github.com/Ensembl/plant_tools/blob/master/production/wheatIS/dump2wheatIS.sh
+
+Read more about the wheatIS at http://wheatis.org and https://f1000research.com/articles/9-536
+
