@@ -17,6 +17,7 @@ use HTTP::Tiny;
 use JSON;
 use Data::Dumper;
 use Net::FTP;
+use 5.10.4;
 
 # hard-coded default parameters
 my $required_assembly_state = 'chromosome';
@@ -24,6 +25,7 @@ my $required_genome_representation = 'full';
 my $ensembl_division = 'EnsemblPlants';
 my $GFFfolder = './GFFfiles/';
 my $used_saved_files = 0;
+my $skip_existing = 0;
 
 # URLs and query paths, can change with time
 my $RESTURL    = 'http://rest.ensembl.org';
@@ -42,7 +44,7 @@ my $WGETEXE = 'wget';
 
 ## 0) handle user arguments
 my (%opts, $taxon_name);
-getopts('hSd:t:r:s:f:', \%opts);
+getopts('hSd:t:r:s:f:E', \%opts);
 
 if(($opts{'h'})||(scalar(keys(%opts))==0)){
   print "\nusage: $0 [options]\n\n";
@@ -52,7 +54,8 @@ if(($opts{'h'})||(scalar(keys(%opts))==0)){
   print "-f path to folder to save downloaded GFF files (optional, default: -f $GFFfolder)\n";
   print "-S use available local GFF files               (optional, default: download from scratch)\n";
   print "-s required ENA assembly state                 (optional, default: -s $required_assembly_state)\n";
-  print "-r required ENA assembly representation        (optional, default: -r $required_genome_representation)\n\n";
+  print "-r required ENA assembly representation        (optional, default: -r $required_genome_representation)\n";
+  print "-E just show assemblies not in Ensembl          (optional, default: show all assemblies)\n\n";
   print "Please check https://www.ebi.ac.uk/ena/browse/assembly-format for valid values for -r/-s\n\n";
   exit(0);
 }
@@ -72,6 +75,7 @@ if($opts{'f'}){ $GFFfolder = $opts{'f'} }
 if(!-d $GFFfolder){ mkdir($GFFfolder) }
 
 if($opts{'S'}){ $used_saved_files = 1 }
+if($opts{'E'}){ $skip_existing = 1 }
 
 # complete REST URLs based on arguments
 my $RESTtaxonomy_query = "$RESTURL/taxonomy/name/$taxon_name?";
@@ -153,7 +157,15 @@ while(<LOCALENA>){
 	
 	my @data = split(/\t/,$_);
 	($assembly_id,$assembly_state,$genome_representation,$scientific_name,$strain) = @data[0,1,2,5,6];
+
+        ##If option is chosen only show assemblies not in Ensembl
+        my $exist_in_ensembl = check_exist($scientific_name);
+        if ($exist_in_ensembl and $skip_existing){
+            next;
+        }
+
 	next if($assembly_id eq 'accession');
+        
 
 	if($strain eq ''){ $strain = 'NA' }
 
@@ -319,3 +331,21 @@ sub count_genes_GFF {
        
 	return $n_of_genes;
 }
+
+sub check_exist {
+    my ($name) = @_;
+    my $production_name = lcfirst($scientific_name);
+    $production_name =~ s/ /_/;
+
+    my $server = 'https://rest.ensembl.org';
+    my $ext = "/info/assembly/$production_name?";
+    my $response = $http->get($server.$ext, {
+        headers => { 'Content-type' => 'application/json' }
+    });
+    if ($response->{content} =~ /error/){
+        return 0; ##doesn't exist 
+    }
+    return 1; ##exist
+}
+
+
