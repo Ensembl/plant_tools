@@ -13,12 +13,12 @@ use Bio::Seq;
 # This should be run after loading a genome from ENA 
 # NOTE: it will update meta.genebuild dates and version
 # NOTE: it won't load gene descriptions by default
-# NOTE: hive pipelines must be run in eb-cli nodes
+# NOTE: hive pipelines must be run in ebi-cli nodes
 #
 # It uses env $USER to create hive job names and assumes:
 # i) Ensembl-version API is loaded in @INC / $PERL5LIB
 #
-# Adapted from Dan Bolsers run_the_gff_loader2.sh by B Contreras Moreira 2018-20
+# Adapted from Dan Bolsers run_the_gff_loader2.sh by B Contreras Moreira 2018-21
 #
 # https://www.ebi.ac.uk/seqdb/confluence/display/EnsGen/Load+GFF3+Pipeline
 #
@@ -55,7 +55,7 @@ if(($opts{'h'})||(scalar(keys(%opts))==0)){
   print "-m max genes to load                           (optional, default: all loaded)\n";
   print "-a incrementally add GFF to prev annotation    (optional, default: delete previous)\n";
   print "-N take name instead of ID as stable_id        (optional, default: ID is stable_id)\n";
-  print "-n replace chr names with Perl-regex           (optional, example: -n 'SL3.0ch0*(\\d+)' )\n";
+  print "-n replace chr names with Perl-regex           (optional, example: -n 'SL3.0ch0*(\\d+)' , overrides -Y)\n";
   print "-z skip chr zero in GFF3 file                  (optional, requires -n)\n";
   print "-y saves original chr names as synonyms in db  (optional, requires -n)\n";
   print "-e print sequence of chromosome ends in db     (optional, requires -n)\n";
@@ -167,7 +167,6 @@ $argsline = sprintf("%s -s %s -f %s -g %s -S %s -L %s -o %d -v %s -R %s -D %s -H
   $add_to_previous, $overwrite, $rerun, $URL, $full_provider_name );
 
 print "# $argsline\n\n";
-
 
 ## check format and ID=names in GFF3 file to warn about gene:, mRNA:,... tags, which otherwise are added as stable_ids to db
 #SL3.0ch00	maker_ITAG	gene	16480	17940	.	+	.	ID=gene:Solyc00g005000.3...
