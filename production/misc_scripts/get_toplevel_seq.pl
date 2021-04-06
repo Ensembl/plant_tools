@@ -12,22 +12,25 @@ my ($host,$user,$port,$logic_name) = ('','','','');
 my $usage = "# usage: $0 <dbname> <species> <server cmd> <mask: none, hard, soft> [repeats logic_name, default=RepeatMasker]";
 
 if(!$ARGV[3]){ die "$usage\n" }
-else {
+elsif($ARGV[4]){
 	($dbname, $species, $servercmd, $mask, $logic_name) = @ARGV;
-
-	# check mask
-	if($mask ne 'none' && 
-			$mask ne 'hard' &&
-			$mask ne 'soft'){
-		die "$usage\n"
-	}
-
-	# get db server connection details
-	chomp( $server_details = `$servercmd -details script` );
-	if($server_details =~ m/--host (\S+) --port (\d+) --user (\S+)/){
-		($host,$port,$user) = ($1,$2,$3);
-	} 
 }
+else {
+	($dbname, $species, $servercmd, $mask) = @ARGV;
+}
+
+# check mask
+if($mask ne 'none' && 
+	$mask ne 'hard' &&
+	$mask ne 'soft'){
+	die "$usage\n"
+}
+
+# get db server connection details
+chomp( $server_details = `$servercmd -details script` );
+if($server_details =~ m/--host (\S+) --port (\d+) --user (\S+)/){
+	($host,$port,$user) = ($1,$2,$3);
+} 
 
 # open db connection, assume it's a core schema
 my $dba = Bio::EnsEMBL::DBSQL::DBAdaptor->new(
