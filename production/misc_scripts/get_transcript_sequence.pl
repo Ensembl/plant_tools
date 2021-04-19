@@ -5,8 +5,12 @@ use Bio::EnsEMBL::Registry;
 use Bio::EnsEMBL::DBSQL::DBAdaptor;
 use feature qw /say/;
 
-if(!$ARGV[2]){
-	die "# usage: $0 <registry> <species> <transcript stable_id>\n";
+# Retrieves FASTA CDS sequence of all protein-coding transcripts.
+# Alternatively, if stable_id is passed to select transcript, 
+# cDNA, exon and peptide sequences are also produced
+
+if(!$ARGV[1]){
+	die "# usage: $0 <registry> <species> [transcript stable_id]\n";
 }
 
 my ($regfile,$species,$stable_id) = @ARGV;
@@ -15,18 +19,30 @@ my ($regfile,$species,$stable_id) = @ARGV;
 my $registry = 'Bio::EnsEMBL::Registry';
 $registry->load_all($regfile);
     
-# fetch a gene by its stable identifier
 my $t_adaptor = $registry->get_adaptor($species, "core", "Transcript");
-my $transcript = $t_adaptor->fetch_by_stable_id($stable_id);
 
-printf("cDNA\t%s\n\n",$transcript->spliced_seq());
+# get all protein-coding (default) or selected transcript stable_id
+my @transcripts;
 
-foreach my $exon ( @{ $transcript->get_all_Exons() } ) {
-	print  "exon: ", $exon->start(), " ", $exon->end(), "\n";
+if($stable_id){
+	my $transcript = $t_adaptor->fetch_by_stable_id($stable_id);
+	push(@transcripts, $transcript);
+} else{
+	@transcripts = @{ $t_adaptor->fetch_all_by_biotype('protein_coding') };
 }
 
-printf("CDS \t%s\n\n",$transcript->translateable_seq());
+foreach my $transcript (@transcripts) {
 
+	printf(">%s CDS\n%s\n",$transcript->stable_id(),$transcript->translateable_seq());
 
-printf("pep \t%s\n\n",$transcript->translate()->seq());
+	if($stable_id) {
 
+		printf(">%s cDNA\n%s\n",$transcript->stable_id(),$transcript->spliced_seq());
+	
+		foreach my $exon ( @{ $transcript->get_all_Exons() } ) {
+			print  ">exon: ", $exon->start(), " ", $exon->end(), "\n";
+		}
+
+		printf(">%s pep\n%s\n",$transcript->stable_id(),$transcript->translate()->seq());
+	}
+}
