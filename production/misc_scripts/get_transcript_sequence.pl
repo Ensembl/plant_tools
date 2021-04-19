@@ -5,9 +5,9 @@ use Bio::EnsEMBL::Registry;
 use Bio::EnsEMBL::DBSQL::DBAdaptor;
 use feature qw /say/;
 
-# Retrieves FASTA CDS sequence of all protein-coding transcripts.
-# Alternatively, if stable_id is passed to select transcript, 
-# cDNA, exon and peptide sequences are also produced
+# Retrieves FASTA cDNA sequences of all protein-coding transcripts.
+# Alternatively, if a stable_id is passed to select transcript, 
+# CDS, exon and peptide sequences are also produced
 
 if(!$ARGV[1]){
 	die "# usage: $0 <registry> <species> [transcript stable_id]\n";
@@ -33,11 +33,11 @@ if($stable_id){
 
 foreach my $transcript (@transcripts) {
 
-	printf(">%s CDS\n%s\n",$transcript->stable_id(),$transcript->translateable_seq());
+	printf(">%s cDNA\n%s\n",$transcript->stable_id(),$transcript->spliced_seq());
 
 	if($stable_id) {
 
-		printf(">%s cDNA\n%s\n",$transcript->stable_id(),$transcript->spliced_seq());
+		printf(">%s CDS\n%s\n",$transcript->stable_id(),$transcript->translateable_seq());
 	
 		foreach my $exon ( @{ $transcript->get_all_Exons() } ) {
 			print  ">exon: ", $exon->start(), " ", $exon->end(), "\n";
