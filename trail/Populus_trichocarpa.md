@@ -1,10 +1,8 @@
 
-Poplar (Populus trichocarpa)
+Poplar, black  cottonwood (Populus trichocarpa)
 
 [ to be done]
 
-135Mb , 5 chromosomes , diploid , http://plants.ensembl.org/Arabidopsis_thaliana
+485Mb , 19 chromosomes , diploid , http://plants.ensembl.org/Populus_trichocarpa
 
-Arabidopsis thaliana is a small weed native to Eurasia and Africa. Compared to other relatives of the mustard family (Brassicaceae), such as cabbage or rapeseed, has little agronomic significance. It has been the model organism for plants due to its short generation time, small size, large number of offspring, and small genome. In 2000 it was the first plant ever to have its genome sequenced. Researchers around the world have used this tiny plant as a Rosetta stone for plant biology. Many discoveries about flowering or evolution were made first on Arabidopsis and then transfered to other species and crops. It is the best source of gene annotation for dicot plants. Today many other plants are being used as models for specific topics. For instance, Brachypodium distachyon is regarded as a better model for monocots.
-
-[Not guaranteed in the garden as germination difficult from seed (Apr2021)]
+This is a broadleaf tree native to Western North America that belongs to the willow family (Salicaeae). It is an important source of timber and is deciduous, so each year sheds it leaves. The poplar is a fast growing tree that can reach reproductive maturity in as few as 4-6 years, permitting selective breeding for large-scale sustainable plantation forestry. Moreover, its genome is relatively small and for that reason was the first model species among trees. Poplar species are predominantly dioecious, meaning that their male and female reproductive structures are located in different individuals. This obligate outcrossing, along with wind pollination and wind dispersed plumose seeds, results in high levels of gene flow and high levels of heterozygosity. This is in contrast to other plant models, such as Arabidopsis thaliana or Brachypodium distachyon, which are highly homozygous.
