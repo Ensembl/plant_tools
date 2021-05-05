@@ -171,7 +171,9 @@ if($only_metadata == 0){
 		"init_pipeline.pl $conf\::Probe2Transcript_conf                 $pipeline_parameters -hive_no_init 1",
 		"init_pipeline.pl $conf\::RunProbeToTranscriptHealthchecks_conf $pipeline_parameters -hive_no_init 1",
 		"init_pipeline.pl $conf\::SwitchToMyIsam_conf                   $pipeline_parameters -hive_no_init 1",
-		"init_pipeline.pl $conf\::RunSwitchTableEngineHealthchecks_conf $pipeline_parameters -hive_no_init 1"
+		"init_pipeline.pl $conf\::RunSwitchTableEngineHealthchecks_conf $pipeline_parameters -hive_no_init 1",
+		"init_pipeline.pl $conf\::Populate_meta_coord_conf              $pipeline_parameters -hive_no_init 1",
+		"init_pipeline.pl $conf\::ProbeMappingHc"
 	);
 
 	## Seed pipeline with all input species
