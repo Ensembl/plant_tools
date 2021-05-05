@@ -173,7 +173,7 @@ if($only_metadata == 0){
 		"init_pipeline.pl $conf\::SwitchToMyIsam_conf                   $pipeline_parameters -hive_no_init 1",
 		"init_pipeline.pl $conf\::RunSwitchTableEngineHealthchecks_conf $pipeline_parameters -hive_no_init 1",
 		"init_pipeline.pl $conf\::Populate_meta_coord_conf              $pipeline_parameters -hive_no_init 1",
-		"init_pipeline.pl $conf\::ProbeMappingHc"
+		"init_pipeline.pl $conf\::ProbeMappingHc                        $pipeline_parameters -hive_no_init 1"
 	);
 
 	## Seed pipeline with all input species
@@ -193,13 +193,13 @@ if($only_metadata == 0){
 	print "# hive job URL: $hive_url\n\n";
 	
 	system("beekeeper.pl -url $hive_url -sync");
-	system("runWorker.pl -url $hive_url -reg_conf $reg_file");
-	system("runWorker.pl -url $hive_url -reg_conf $reg_file");
-	system("runWorker.pl -url $hive_url -reg_conf $reg_file");
-	system("runWorker.pl -url $hive_url -reg_conf $reg_file");
-	system("runWorker.pl -url $hive_url -reg_conf $reg_file");
-	system("runWorker.pl -url $hive_url -reg_conf $reg_file");
-	system("beekeeper.pl -url $hive_url -reg_conf $reg_file -loop -keep_alive");
+	#system("runWorker.pl -url $hive_url -reg_conf $reg_file");
+	#system("runWorker.pl -url $hive_url -reg_conf $reg_file");
+	#system("runWorker.pl -url $hive_url -reg_conf $reg_file");
+	#system("runWorker.pl -url $hive_url -reg_conf $reg_file");
+	#system("runWorker.pl -url $hive_url -reg_conf $reg_file");
+	#system("runWorker.pl -url $hive_url -reg_conf $reg_file");
+	system("beekeeper.pl -url $hive_url -reg_conf $reg_file -loop -keep_alive -can_respecialize 1");
 	
 	print "# hive job URL: $hive_url\n\n";
 	
