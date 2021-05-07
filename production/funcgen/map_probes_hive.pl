@@ -64,18 +64,19 @@ else{ die "# EXIT : need a valid -s species_db_name/file, such as -s solanum_lyc
 if($opts{'v'}){
 	$ensembl_version = $opts{'v'};	
 
-	# check Ensembl API is in env
+	# check Ensembl API is in env and 
 	if(!grep(/ensembl-$ensembl_version\/ensembl-hive\/modules/,@INC)){
 		die "# EXIT : cannot find ensembl-$ensembl_version/ensembl-hive/modules in \$PERL5LIB / \@INC\n"
 	} 
 
-	# also check funcgen sql folder
+	# also check ensembl-funcgen 
 	my @funcgen_paths = grep(/ensembl-$ensembl_version\/ensembl-funcgen\/modules/,@INC);
 	if(@funcgen_paths){
 		$sqlpath = $funcgen_paths[0];
 		$sqlpath =~ s/modules/sql\/table.sql/;
 		$funcgenpath = $funcgen_paths[0];
 		$funcgenpath =~ s/modules/scripts\/release/;
+		$ENV{PATH} = "$ENV{PATH}:$funcgenpath";
 	}
 	else{ die "# EXIT : cannot find ensembl-$ensembl_version/ensembl-funcgen/sql in \$PERL5LIB / \@INC\n" }
 }
