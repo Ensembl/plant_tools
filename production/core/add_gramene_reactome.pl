@@ -4,13 +4,13 @@ use warnings;
 use Getopt::Long qw(:config no_ignore_case);;
 use Bio::EnsEMBL::Registry;
 
-# This script submits a reactome load job to hive
+# This script submits a reactome xref load job to hive
 #
 # It uses env $USER to create hive job names and assumes Ensembl-version API
 # is loaded in @INC / $PERL5LIB
 #
-# Adapted from Dan Bolser's run_the_gramene_plant_reactome_loader_pipeline.sh
-# by B Contreras Moreira 2019-21
+# Requires https://github.com/Ensembl/ensembl-production-imported
+# 2019-21
 #
 ## check user arguments ######################################################
 ##############################################################################
