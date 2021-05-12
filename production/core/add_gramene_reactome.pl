@@ -56,7 +56,7 @@ sub help_message {
 	"-D ensembl_production db name          (optional, default: -D ensembl_production_Ensembl_version)\n".
 	"-H hive database command               (optional, default: $hive_db_cmd)\n".
 	"-w over-write db (hive_force_init)     (optional, useful when a previous run failed)\n".
-	"-S check stats only                    (optional, does not load new data)\n";
+	"-S check stats only                    (optional, does not load new data)\n".
 	"-u use upper-case gene ids             (optional, required for some species ie oryza_sativa)\n\n";
 	exit(0);
 }
