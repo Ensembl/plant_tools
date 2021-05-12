@@ -1,1 +1,1 @@
-This folder has been renamed as [phylogenomics](../phylogenomics/)
+This content moved to https://github.com/Ensembl/plant-scripts
