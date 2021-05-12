@@ -10,7 +10,7 @@ use Bio::EnsEMBL::Registry;
 # is loaded in @INC / $PERL5LIB
 #
 # Adapted from Dan Bolser's run_the_gramene_plant_reactome_loader_pipeline.sh
-# by B Contreras Moreira 2019
+# by B Contreras Moreira 2019-21
 #
 ## check user arguments ######################################################
 ##############################################################################
@@ -24,7 +24,7 @@ my $prodbname = 'ensembl_production_';
 my $hive_db_cmd = 'mysql-ens-hive-prod-2-ensrw';
 my $overwrite = 0;
 my ($help,$reg_file,$sp,$species_cmd,$ensembl_version,$stats_only);
-my ($xref_reac_file,$xref_path_file,$pipeline_dir);
+my ($xref_reac_file,$xref_path_file,$pipeline_dir,$upper);
 my (@species,@db_names,$db);
 my ($hive_args,$hive_url,$hive_db);
 
@@ -39,7 +39,8 @@ GetOptions(
 	"pipelinedir|P=s" => \$pipeline_dir,
 	"statsonly|S" => \$stats_only,
 	"species|s=s" => \@species,
-	"prodb|D=s"   => \$prodbname
+	"prodb|D=s"   => \$prodbname,
+	"upper|u"     => \$upper
 ) || help_message(); 
 
 if($help){ help_message() }
@@ -52,10 +53,11 @@ sub help_message {
 	"-v next Ensembl version                (required, example: -v 95)\n".
 	"-R registry file, can be env variable  (required, example: -R \$p1panreg)\n".
 	"-P pipeline dir, can be env variable   (required, example: -P \$dumptmp)\n".
-        "-D ensembl_production db name          (optional, default: -D ensembl_production_Ensembl_version)\n".
+	"-D ensembl_production db name          (optional, default: -D ensembl_production_Ensembl_version)\n".
 	"-H hive database command               (optional, default: $hive_db_cmd)\n".
 	"-w over-write db (hive_force_init)     (optional, useful when a previous run failed)\n".
-	"-S check stats only                    (optional, does not load new data)\n\n";
+	"-S check stats only                    (optional, does not load new data)\n";
+	"-u use upper-case gene ids             (optional, required for some species ie oryza_sativa)\n\n";
 	exit(0);
 }
 
@@ -154,14 +156,18 @@ $hive_url .= $hive_db;
 
 if(!$stats_only){
 	my $initcmd = "init_pipeline.pl Bio::EnsEMBL::EGPipeline::PipeConfig::Xref_GPR_conf ".
-    		"$hive_args ".
-    		"-registry $reg_file ".
+		"$hive_args ".
+		"-registry $reg_file ".
 		"-production_db $prodbname ".
 		"-pipeline_dir $pipeline_dir ".
-    		"$species_cmd ".
+		"$species_cmd ".
 		"-xref_reac_file $xref_reac_file ".
 		"-xref_path_file $xref_path_file ".
-		"-hive_force_init $overwrite";
+		"-hive_force_init $overwrite ";
+
+	if(defined($upper)) {
+		$initcmd .= "-uppercase_gene_id ";
+	}
 
 	print "# $initcmd\n\n";
 	
