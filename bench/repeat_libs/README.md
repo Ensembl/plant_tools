@@ -103,10 +103,11 @@ the pangenome matrices and the intersection heatmap
 ## 3) Align TE clusters and annotate Pfam domains
 
 In this step we'll use two scripts to annotate Pfam domains encoded in sequences within the clusters generated in step 2.
-Note that two predefined lists of Pfam domains are used as positive and negative controls.
-File [control_pos.list](./control_pos.list) contains protein domains commonly encoded in transposons.
-Instead, [control_neg_NLR.list)](./control_neg_NLR.list) contains protein domains found in plant NLR genes, 
-which are not transposons.
+
+Note that two curated lists of Pfam domains are used as positive and negative controls.
+File [control_pos.list](./control_pos.list) contains a set of Pfam domains contained in coding sequences of bona fide TEs.
+Instead, file [control_neg_NLR.list](./control_neg_NLR.list) contains Pfam domains of NLR genes, curated by Carla Filippi. 
+NLR genes are known to be often masked when masking repeated sequences in genomes (see https://www.nature.com/articles/s41477-018-0264-0) and are common accessory genes in plant pangenomes (https://doi.org/10.3389/fpls.2017.00184 , https://www.nature.com/articles/s41467-017-02292-8).
 
 ```
 perl annot_TEs.pl all_clusters/pangenome_matrix_genes_t0.tr.tab &>log.annot
@@ -117,38 +118,24 @@ perl get_ambiguous_Pfam_domains.pl log.annot control_pos.list control_neg_NLR.li
 # negative Pfam domains = 43
 # TEclusters=174426
 # mixedclusters=8910
+```
 
-In total, we found 174426 clusters containing TE sequences, 
+In total, there are 174426 clusters containing TE sequences,         
 of which a subset of 8910 clusters contain TE and cDNA sequences, and are thus called *mixed clusters*.
 
+The resulting TSV file [Pfam.tsv](./Pfam.tsv) summarizes **mixed clusters** in terms of Pfam domains called after translating sequences in 6 frames. This TSV file contains 10 columns: *domain, totclusters, occurrences, totseqs, TElibs, cDNAlibs, potgenes, frac_potgenes, notes, clusters*. 
 
-```
- 
-The resulting TSV file [Pfam.tsv](./Pfam.tsv) summarizes mixed clusters in terms of Pfam domains called after translating sequences in 6 frames. This TSV file contains 10 columns: *domain, totclusters, occurrences, totseqs, TElibs, cDNAlibs, potgenes, frac_potgenes, notes, clusters*. We'll test *TElibs* > 6 && *frac_potgenes* <= 0.00 as predictors of Pfam domains truly related to TEs, which are domains:
+Two of these columns are used in the next step to filter out ambiguous TE sequences:
 
-* identified in at least 6 different clusters from different TE libraries (6 replicates)
-* with fraction of sequences marked as Potential Host Gene in [RepetDB](http://urgi.versailles.inra.fr/repetdb/begin.do) <= 0.00
-
-base) [contrera@selva repeat_libs]$ perl -F"\t" -lane 'print if($F[4]>=2 && $F[7]==0 && $F[8] eq 'negative_control')' Pfam.tsv | wc
-     10     100    2898
-	 (base) [contrera@selva repeat_libs]$ perl -F"\t" -lane 'print if($F[4]>=3 && $F[7]==0 && $F[8] eq 'negative_control')' Pfam.tsv | wc
-	       5      50    2419
-		   (base) [contrera@selva repeat_libs]$ perl -F"\t" -lane 'print if($F[4]>=4 && $F[7]==0 && $F[8] eq 'negative_control')' Pfam.tsv | wc
-		         4      40    2315
-				 (base) [contrera@selva repeat_libs]$ perl -F"\t" -lane 'print if($F[4]>=5 && $F[7]==0 && $F[8] eq 'negative_control')' Pfam.tsv | wc
-				       3      30    2190
-					   (base) [contrera@selva repeat_libs]$ perl -F"\t" -lane 'print if($F[4]>=6 && $F[7]==0 && $F[8] eq 'negative_control')' Pfam.tsv | wc
-					         2      20    2044
-
-
+* TElibs ($F[4]) -> number of TE libraries present in a sequence cluster (this can be thought of replicates)
+* frac_potgenes ($F[7]) -> fraction of sequences marked as Potential Host Gene (PHGs) in 
+[RepetDB](http://urgi.versailles.inra.fr/repetdb/begin.do)
 
 ## 4) Removing ambiguous TE sequences
 
-Two lists of Pfam domains were curated as controls. 
-File [control_pos.list](./control_pos.list) contains a set of Pfam domains contained in coding sequences of bona fide TEs. 
-Instead, file [control_neg_NLR.list](./control_neg_NLR.list) contains Pfam domains of NLR genes, curated by Carla Filippi. NLR genes are known to be often masked when masking repeated sequences in genomes (see https://www.nature.com/articles/s41477-018-0264-0) and are common accessory genes in plant pangenomes (https://doi.org/10.3389/fpls.2017.00184 , https://www.nature.com/articles/s41467-017-02292-8).
-
-Both files were used to compute the performance of removing TE sequences clustered with PHGs:
+For nrTEplants v0.3 we chose cut-offs *TElibs* >= 6 && *frac_potgenes* <= 0.00 to select Pfam domains truly related to TEs.
+Smaller values of *TElibs* increased the number of false negatives.
+As shown below, control Pfam domains allows us to compute estimate sensitivity and specificity:
 
 ```
 #TP = True positive = correctly identified
@@ -194,7 +181,9 @@ wc Pfam2remove.list
 
 ## 5) Producing a nonredundant TE library
 
-Finally, a non-redundant library of plant TEs was produced as follows, which can be downloaded at https://github.com/Ensembl/plant_tools/releases/tag/v0.3:
+Finally, a non-redundant library of plant TEs was produced with script *select_TE_clusters.pl*.
+Check the source of the script to see the custom rules to standardize TE classification terms, 
+you might need to adjust these or add new ones with your own data:
 
 ```
 ./select_TE_clusters.pl log.annot clusters2remove.list nrTEplantsJun2020.fna > log.select
@@ -216,9 +205,10 @@ sunrep1.0       43
 
 Check log.select for the complete report of the resulting nr library.
 
-NOTE: nr sequences from the Unassigned class from TAIR10 were renamed to 'Unclassified'
+NOTE: for v0.3 sequences from the Unassigned class from TAIR10 were renamed to 'Unclassified'
 
-# Control: clustering sequences from TE libraries with CD-HIT
+
+## 6) Clustering control: clustering sequences from TE libraries with CD-HIT
 
 In order to put the previous results in context, a similar clustering experiment, including only TEs and no cDNAs, was carried out with [CD-HIT](http://weizhongli-lab.org/cd-hit):
 
