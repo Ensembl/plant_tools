@@ -1,13 +1,19 @@
 
 # nrTEplants
 
-This document explains the steps required to produce the library of non-redundant transposable elements (TE) of plants, nrTEplants. 
+This document explains step-by-step a recipe to produce a library of non-redundant transposable elements (TE).
 
-The current release can be downloaded from https://github.com/Ensembl/plant_tools/releases/tag/v0.3
+This protocol was used used to produce the library nrTEplants, available at https://github.com/Ensembl/plant-scripts/releases/tag/v0.3
 
-## TE libraries
+## 1) Input nucleotide sequences
 
-nrTEplants contains repeated sequences curated and annotated in the following libraries, contained in FASTA format in folder [repeats/](./repeats/): 
+Input sequences include both TE libraries, ideally curated and classified, and transcripts/cDNA sequences annotated in plant genomes.
+If you want to analyze your own sequences please save them in folder [repeats/](./repeats/) in FASTA format.
+
+### 1.1) TE libraries
+
+Version 0.3 of nrTEplants (Jun2020) contains repeated sequences curated and annotated in the following libraries, 
+contained in FASTA format in folder [repeats/](./repeats/): 
 
 |library|files downloaded|sequences|publication|
 |-------|----------------|---------|-----------|
@@ -24,22 +30,27 @@ nrTEplants contains repeated sequences curated and annotated in the following li
 |MelonTE||1560|https://bmcgenomics.biomedcentral.com/articles/10.1186/1471-2164-14-686|
 |[RosaTE](https://iris.angers.inra.fr/obh/downloads)|https://iris.angers.inra.fr/obh/downloads/OBDH_1.0_TE.gff3.gz|355304|https://www.nature.com/articles/s41477-018-0166-1|
 
+### 1.2) cDNA sequences
 
-## cDNA sequences
+In order to gauge the overlap between TE libraries and coding sequences, 
+transcripts from the best annotated plant species, in terms of their 
+[number of proteins reviewed in UniProt](https://docs.google.com/spreadsheets/d/1McW5NHzU6zPvYLsvQvD7ysxTxjl7iyHojLUP_WTT6Kw),
+were downloaded from Ensembl Plants with script [ens_sequences.pl](https://github.com/Ensembl/plant-scripts/tree/master/phylogenomics). 
+The obtained nucleotide files were placed in folder [repeats/](./repeats/) as well. 
+Check the [README.txt](./repeats/README.txt) file in folder repeats/ for details.
 
-In order to gauge the overlap between TE libraries and coding sequences, transcripts from the best annotated plant species in Ensembl Plants were also downloaded with script [ens_sequences.pl](../../phylogenomics/ens_sequences.pl). The obtained nucleotide files were also put in folder [repeats/](./repeats/). Check the [README.txt](./repeats/README.txt) file there for details.
+## 2) Clustering sequences
 
-## Clustering sequences
-
-All TE sequences and cDNA were clustered with [GET_HOMOLOGUES-EST](https://github.com/eead-csic-compbio/get_homologues). This software runs BLASTN megablats and the MCL algorithm, and computes coverage by combining local alignments. 
+All TE and cDNA sequences were clustered with [GET_HOMOLOGUES-EST](https://github.com/eead-csic-compbio/get_homologues). 
+This software runs BLASTN megablast and the MCL algorithm, and computes coverage by combining local alignments. 
 
 ```
-cd ~/soft/github
-
 git clone https://github.com/eead-csic-compbio/get_homologues.git
 ```
 
-Now, in file *get_homologues-est.pl* modify lines [L36-7](https://github.com/eead-csic-compbio/get_homologues/blob/04d3937fff2331705ef4d713f932b630a245a368/get_homologues-est.pl#L36):
+Edit file *get_homologues-est.pl* and modify lines 
+[L36-7](https://github.com/eead-csic-compbio/get_homologues/blob/04d3937fff2331705ef4d713f932b630a245a368/get_homologues-est.pl#L36) 
+to define length boundaries for repeated sequences. The following values worked for nrTEplants v0.3:
 ```
 set my $MAXSEQLENGTH = 55000;
 set my $MINSEQLENGTH = 90;
@@ -77,17 +88,24 @@ perl parse_pangenome_matrix.pl -m all_clusters/pangenome_matrix_t0.tab -A repeat
 # finding genes which are absent in B ...
 # file with genes absent in B (527506): all_clusters/pangenome_matrix_t0__pangenes_list.txt
 ```
-The produced output includes files [log.M](./log.M), pangenomes matrices in folder [all_clusters/](./all_clusters/) and [pangenome_matrix_t0__intersection_heatmap.png](./pics/pangenome_matrix_t0__intersection_heatmap.png). 
 
-## Align TE clusters and annotate Pfam domains
+The main output of these steps are the sequence clusters in folder [all_clusters/](./all_clusters/),
+such as that in **Figure 1**.
 
-We now concentrate on the subset of 174426 clusters containing TE sequences. Note that 8910 clusters contain TE and cDNA sequences, and are thus called *mixed clusters*:
+**Fig. 1.** Cluster with two Arabidopsis thaliana cDNA sequences (AT4G16920.2 and AT4G16950.1) and transposable element TEdenovo-B-R2288-Map4 from library repetDB.Mar2020. These sequences contain Pfam domain [PF00931](https://pfam.xfam.org/family/PF00931), NB-ARC, which is part of NLR defense proteins.  Figure generated with [Bioedit](https://www.researchgate.net/publication/258565830_BioEdit_An_important_software_for_molecular_biology) from cluster [269_AT4G16920.2.fna](./TE_alignments/269_AT4G16920.2.fna)*
+
+Other useful files include the log file [log.M](./log.M), 
+the pangenome matrices and the intersection heatmap
+[pangenome_matrix_t0__intersection_heatmap.png](./pics/pangenome_matrix_t0__intersection_heatmap.png). 
+
+## 3) Align TE clusters and annotate Pfam domains
+
+We'll now concentrate on the subset of 174426 clusters containing TE sequences. 
+Note that 8910 clusters contain TE and cDNA sequences, and are thus called *mixed clusters*:
 
 ![Sample mixed cluster](./pics/269_AT4G16920.2.png)
 
-*Fig. 1. Cluster with two Arabidopsis thaliana cDNA sequences (AT4G16920.2 and AT4G16950.1) and transposable element TEdenovo-B-R2288-Map4 from library repetDB.Mar2020. These sequences contain Pfam domain [PF00931](https://pfam.xfam.org/family/PF00931), NB-ARC, which is part of NLR defense proteins.  Figure generated with [Bioedit](https://www.researchgate.net/publication/258565830_BioEdit_An_important_software_for_molecular_biology) from cluster [269_AT4G16920.2.fna](./TE_alignments/269_AT4G16920.2.fna)*
-
-The next scripts were used to annotate Pfam domains encoded in sequences within these clusters:
+Two scripts were used to annotate Pfam domains encoded in sequences within these clusters:
 
 ```
 perl annot_TEs.pl all_clusters/pangenome_matrix_genes_t0.tr.tab &>log.annot
@@ -106,7 +124,20 @@ The resulting TSV file [Pfam.tsv](./Pfam.tsv) summarizes mixed clusters in terms
 * identified in at least 6 different clusters from different TE libraries (6 replicates)
 * with fraction of sequences marked as Potential Host Gene in [RepetDB](http://urgi.versailles.inra.fr/repetdb/begin.do) <= 0.00
 
-## Removing ambiguous TE sequences
+base) [contrera@selva repeat_libs]$ perl -F"\t" -lane 'print if($F[4]>=2 && $F[7]==0 && $F[8] eq 'negative_control')' Pfam.tsv | wc
+     10     100    2898
+	 (base) [contrera@selva repeat_libs]$ perl -F"\t" -lane 'print if($F[4]>=3 && $F[7]==0 && $F[8] eq 'negative_control')' Pfam.tsv | wc
+	       5      50    2419
+		   (base) [contrera@selva repeat_libs]$ perl -F"\t" -lane 'print if($F[4]>=4 && $F[7]==0 && $F[8] eq 'negative_control')' Pfam.tsv | wc
+		         4      40    2315
+				 (base) [contrera@selva repeat_libs]$ perl -F"\t" -lane 'print if($F[4]>=5 && $F[7]==0 && $F[8] eq 'negative_control')' Pfam.tsv | wc
+				       3      30    2190
+					   (base) [contrera@selva repeat_libs]$ perl -F"\t" -lane 'print if($F[4]>=6 && $F[7]==0 && $F[8] eq 'negative_control')' Pfam.tsv | wc
+					         2      20    2044
+
+
+
+## 4) Removing ambiguous TE sequences
 
 Two lists of Pfam domains were curated as controls. 
 File [control_pos.list](./control_pos.list) contains a set of Pfam domains contained in coding sequences of bona fide TEs. 
@@ -156,7 +187,7 @@ wc Pfam2remove.list
 1632
 ```
 
-## Producing a nonredundant TE library
+## 5) Producing a nonredundant TE library
 
 Finally, a non-redundant library of plant TEs was produced as follows, which can be downloaded at https://github.com/Ensembl/plant_tools/releases/tag/v0.3:
 
