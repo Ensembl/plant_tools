@@ -92,6 +92,8 @@ perl parse_pangenome_matrix.pl -m all_clusters/pangenome_matrix_t0.tab -A repeat
 The main output of these steps are the sequence clusters in folder [all_clusters/](./all_clusters/),
 such as that in **Figure 1**.
 
+![Sample mixed cluster](./pics/269_AT4G16920.2.png)
+
 **Fig. 1.** Cluster with two Arabidopsis thaliana cDNA sequences (AT4G16920.2 and AT4G16950.1) and transposable element TEdenovo-B-R2288-Map4 from library repetDB.Mar2020. These sequences contain Pfam domain [PF00931](https://pfam.xfam.org/family/PF00931), NB-ARC, which is part of NLR defense proteins.  Figure generated with [Bioedit](https://www.researchgate.net/publication/258565830_BioEdit_An_important_software_for_molecular_biology) from cluster [269_AT4G16920.2.fna](./TE_alignments/269_AT4G16920.2.fna)*
 
 Other useful files include the log file [log.M](./log.M), 
@@ -100,12 +102,11 @@ the pangenome matrices and the intersection heatmap
 
 ## 3) Align TE clusters and annotate Pfam domains
 
-We'll now concentrate on the subset of 174426 clusters containing TE sequences. 
-Note that 8910 clusters contain TE and cDNA sequences, and are thus called *mixed clusters*:
-
-![Sample mixed cluster](./pics/269_AT4G16920.2.png)
-
-Two scripts were used to annotate Pfam domains encoded in sequences within these clusters:
+In this step we'll use two scripts to annotate Pfam domains encoded in sequences within the clusters generated in step 2.
+Note that two predefined lists of Pfam domains are used as positive and negative controls.
+File [control_pos.list](./control_pos.list) contains protein domains commonly encoded in transposons.
+Instead, [control_neg_NLR.list)](./control_neg_NLR.list) contains protein domains found in plant NLR genes, 
+which are not transposons.
 
 ```
 perl annot_TEs.pl all_clusters/pangenome_matrix_genes_t0.tr.tab &>log.annot
@@ -116,6 +117,10 @@ perl get_ambiguous_Pfam_domains.pl log.annot control_pos.list control_neg_NLR.li
 # negative Pfam domains = 43
 # TEclusters=174426
 # mixedclusters=8910
+
+In total, we found 174426 clusters containing TE sequences, 
+of which a subset of 8910 clusters contain TE and cDNA sequences, and are thus called *mixed clusters*.
+
 
 ```
  
