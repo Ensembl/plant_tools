@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use Getopt::Long qw(:config no_ignore_case);
 
-# This script submits a repeat pipeline job(s) to hive
+# This script submits repeat pipeline job(s) to hive
 #
 # It uses env $USER to create hive job names and assumes Ensembl-version API
 # is loaded in @INC / $PERL5LIB
@@ -26,7 +26,7 @@ use Getopt::Long qw(:config no_ignore_case);
 ##############################################################################
 
 my $hive_db_cmd = 'mysql-ens-hive-prod-2-ensrw';
-my $libpath = '/nfs/panda/ensemblgenomes/external/data/repeats_libraries/';
+my $libpath = '/nfs/production/flicek/ensembl/shared_data/repeats_libraries/plants/';
 my $nrTEplants_lib = $libpath . 'nrTEplants/nrTEplantsJune2020.fna'; 
 
 my ($rerun,$overwrite,$nrTEplants,$sensitivity) = (0,0,0,'');
@@ -52,7 +52,7 @@ if($help){ help_message() }
 sub help_message {
 	print "\nusage: $0 [options]\n\n".
 		"-s species_name(s)                          (required, example: -s arabidopsis_thaliana -s zea_mays)\n".
-		"-v next Ensembl version                     (required, example: -v 95)\n".
+		"-v E! release match PERL5LIB & core name    (required, example: -v 104)\n".
 		"-R registry file, can be env variable       (required, example: -R \$p2panreg)\n".
 		"-P folder to put pipeline files, can be env (required, example: -P \$reptmp)\n".
 		"-D ensembl_production db name               (required, example: -D ensembl_production)\n".	
@@ -66,11 +66,11 @@ sub help_message {
 
 if($ensembl_version){
 	# check Ensembl API is in env
-	if(!grep(/ensembl-$ensembl_version\/ensembl-hive\/modules/,@INC)){
-		die "# EXIT : cannot find ensembl-$ensembl_version/ensembl-hive/modules in \$PERL5LIB / \@INC\n"
+	if(!grep(/ensembl-hive\/modules/,@INC)){
+		die "# EXIT : cannot find ensembl-hive/modules in \$PERL5LIB / \@INC\n"
 	}
 }
-else{ die "# EXIT : need a valid -v version, such as -v 95\n" } 
+else{ die "# EXIT : need a valid Ensembl release, such as -v 105\n" } 
 
 if(@species){
 	foreach my $sp (@species){ 
@@ -92,7 +92,7 @@ if($rerun && $overwrite){
 chomp( $hive_args = `$hive_db_cmd details script` );
 $hive_db = $ENV{'USER'}."_dna_features_$ensembl_version"; 
 chomp( $hive_url  = `$hive_db_cmd --details url` );
-$hive_url .= $hive_db;
+$hive_url .= $hive_db; 
 
 ## Run init script and produce a hive_db with all tasks to be carried out
 #########################################################################
