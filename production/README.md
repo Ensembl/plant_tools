@@ -4,8 +4,6 @@ These are scripts and protocols used during the release cycle of Ensembl Plants.
 
 This is the usual order in which they are run:
 
-* misc_scripts/local_checkout.sh ; ensetup $ensembl_version
-
 * scripts in core/ 
 
 * scripts in variation/
