@@ -63,9 +63,9 @@ sub help_message {
 
 if($ensembl_version){
 	# check Ensembl API is in env
-	if(!grep(/ensembl-$ensembl_version\/ensembl-hive\/modules/,@INC)){
-                die "# EXIT : cannot find ensembl-$ensembl_version/ensembl-hive/modules in \$PERL5LIB / \@INC\n"
-        }
+	if(!grep(/ensembl-hive\/modules/,@INC)){
+		die "# EXIT : cannot find ensembl-hive/modules in \$PERL5LIB / \@INC\n"
+	}
 	$prodbname .= $ensembl_version;
 }
 else{ die "# EXIT : need a valid -v version, such as -v 95\n" } 
@@ -88,9 +88,9 @@ if(!$pipeline_dir || !-e $pipeline_dir){
 }
 
 if(@species){ # optional
-        foreach $sp (@species){
-                $species_cmd .= "-species $sp ";
-        }
+	foreach $sp (@species){
+		$species_cmd .= "-species $sp ";
+	}
 } else {
 	die "# EXIT : need a valid -s species, such as -s arabidopsis_thaliana -s ...\n"
 }
