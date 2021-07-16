@@ -74,12 +74,12 @@ if(($opts{'h'})||(scalar(keys(%opts))==0)){
 }
 
 if($opts{'v'}){
-        $ensembl_version = $opts{'v'};
+	$ensembl_version = $opts{'v'};
 
-        # check Ensembl API is in env
-	if(!grep(/ensembl-$ensembl_version\/ensembl-hive\/modules/,@INC)){
-                die "# EXIT : cannot find ensembl-$ensembl_version/ensembl-hive/modules in \$PERL5LIB / \@INC\n"
-        } 
+	# check Ensembl API is in env
+	if(!grep(/ensembl-hive\/modules/,@INC)){
+		die "# EXIT : cannot find ensembl-hive/modules in \$PERL5LIB / \@INC\n"
+	} 
 }
 else{ die "# EXIT : need a valid -v version, such as -v 95\n" }
 
