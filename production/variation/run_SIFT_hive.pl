@@ -19,7 +19,7 @@ use Bio::EnsEMBL::Registry;
 # Uses env $ENSAPIPATH to locate ensembl-hive API
 # and env $USER to create hive job names 
 #
-# B Contreras Moreira EMBL-EBI 2019-20
+# B Contreras Moreira EMBL-EBI 2019-21
 #
 # https://www.ebi.ac.uk/seqdb/confluence/display/EnsGen/Running+the+Sift+pipeline
 # https://www.ebi.ac.uk/seqdb/confluence/display/EV/Protein+function+pipeline
@@ -32,7 +32,7 @@ my ($pipeline_dir,$reg_file,$hive_args,$hive_db,$hive_url,$argsline);
 my ($rerun,$update,$overwrite,$hive_path,$onlyinit) = (0,0,0,0);
 my ($blastdb_release,$sift_version) = ('','');
 my $hive_db_cmd = 'mysql-ens-hive-prod-2-ensrw';
-my $ensemblpath = $ENV{'ENSAPIPATH'};
+my $ensemblpath = $ENV{'ENSEMBL_ROOT_DIR'};
 my $blastbin = $ENV{'blastbin'} || '';
 my $blastdb = $ENV{'uniref90'} || '';
 my $siftdir = $ENV{'sift_dir'} || '';
@@ -61,9 +61,9 @@ if($opts{'v'}){
         $ensembl_version = $opts{'v'};
 
         # check ensembl-hive API exists for this version
-        $hive_path = "$ensemblpath/ensembl-$ensembl_version/ensembl-hive/";
+        $hive_path = "$ensemblpath/ensembl-hive/";
         if(!-d $hive_path) {
-                die "# EXIT : cannot find ensembl-$ensembl_version/ensembl-hive,".
+                die "# EXIT : cannot find ensembl-hive,".
 			"\n# make sure \$ENSAPIPATH is set\n";
         } 
 }
