@@ -196,4 +196,4 @@ print "# hive job URL: $hive_url\n\n";
 print "# If any jobs failed you can run them locally with:\n";
 print "# runWorker.pl -url=$hive_url -reg_conf $reg_file -job_id=XYZ\n\n";
 
-print "\n\n# IMPORTANT: if you mapped a new probeset please edit PROBESPREADSHEET\n\n";
+print "\n\n# IMPORTANT: if you mapped a new probeset please edit PROBESPREADSHEET (confluence)\n\n";
