@@ -13,7 +13,7 @@ use Bio::EnsEMBL::Registry;
 # $ENV{'USER'}."_all_xref_$ensembl_version";
 #
 # Adapted from Dan Bolser's run_the_xref_pipelines.sh
-# by B Contreras Moreira 2019
+# by B Contreras Moreira 2019-21
 #
 # https://www.ebi.ac.uk/seqdb/confluence/display/EnsGen/Combined+Xref+Pipeline
 #
@@ -30,7 +30,7 @@ GetOptions(
 		"overwrite|w" => \$overwrite, 
 		"rerun|r"     => \$rerun,
 		"version|v=s" => \$ensembl_version,
-                "species|s=s" => \@species,
+		"species|s=s" => \@species,
 		"hivecmd|H=s" => \$hive_db_cmd,    
 		"regfile|R=s" => \$reg_file,
 		"pipedir|P=s" => \$pipeline_dir,
@@ -44,7 +44,7 @@ sub help_message {
 	"-s species_name(s)                          (required, example: -s arabidopsis_thaliana -s brachypodium_distachyon)\n".
 	"-v next Ensembl version                     (required, example: -v 95)\n".
 	"-R registry file, can be env variable       (required, example: -R \$p2panreg)\n".
-        "-P folder to put pipeline files, can be env (required, example: -P \$reptmp)\n".
+	"-P folder to put pipeline files, can be env (required, example: -P \$reptmp)\n".
 	"-D ensembl_production db name               (required, example: -D ensembl_production_97)\n".
 	"-H hive database command                    (optional, default: $hive_db_cmd)\n".
 	"-w over-write db (hive_force_init)          (recommended, as hive job name does not include species)\n".
@@ -54,9 +54,9 @@ sub help_message {
 
 if($ensembl_version){
 	# check Ensembl API is in env
-	if(!grep(/ensembl-$ensembl_version\/ensembl-hive\/modules/,@INC)){
-                die "# EXIT : cannot find ensembl-$ensembl_version/ensembl-hive/modules in \$PERL5LIB / \@INC\n"
-        }
+	if(!grep(/ensembl-hive\/modules/,@INC)){
+		die "# EXIT : cannot find ensembl-hive/modules in \$PERL5LIB / \@INC\n"
+	}
 }
 else{ die "# EXIT : need a valid -v version, such as -v 95\n" } 
 
