@@ -17,8 +17,6 @@ use Bio::EnsEMBL::Registry;
 ## check user arguments ######################################################
 ##############################################################################
 
-my $METASPREADSHEET = 'https://docs.google.com/spreadsheets/d/1cfXs8y5rdXTfe5kf8MvsWVcgZKcql8WxOIUbYDW37Fk/edit';
-
 my (%opts,$species_db_name,@species_dbs,$probes_dir,$core_db,$ensembl_version,$check_db);
 my ($prod_server,$pipeline_dir,$reg_file,$hive_args,$hive_db,$hive_url,$argsline);
 my ($funcgenpath,$sqlpath,$species);
@@ -65,12 +63,12 @@ if($opts{'v'}){
 	$ensembl_version = $opts{'v'};	
 
 	# check Ensembl API is in env and 
-	if(!grep(/ensembl-$ensembl_version\/ensembl-hive\/modules/,@INC)){
-		die "# EXIT : cannot find ensembl-$ensembl_version/ensembl-hive/modules in \$PERL5LIB / \@INC\n"
+	if(!grep(/ensembl-hive\/modules/,@INC)){
+		die "# EXIT : cannot find ensembl-hive/modules in \$PERL5LIB / \@INC\n"
 	} 
 
 	# also check ensembl-funcgen 
-	my @funcgen_paths = grep(/ensembl-$ensembl_version\/ensembl-funcgen\/modules/,@INC);
+	my @funcgen_paths = grep(/ensembl-funcgen\/modules/,@INC);
 	if(@funcgen_paths){
 		$sqlpath = $funcgen_paths[0];
 		$sqlpath =~ s/modules/sql\/table.sql/;
@@ -78,7 +76,7 @@ if($opts{'v'}){
 		$funcgenpath =~ s/modules/scripts\/release/;
 		$ENV{PATH} = "$ENV{PATH}:$funcgenpath";
 	}
-	else{ die "# EXIT : cannot find ensembl-$ensembl_version/ensembl-funcgen/sql in \$PERL5LIB / \@INC\n" }
+	else{ die "# EXIT : cannot find ensembl-funcgen/sql in \$PERL5LIB / \@INC\n" }
 }
 else{ die "# EXIT : need a valid -v version, such as -v 95\n" }
 
@@ -198,4 +196,4 @@ print "# hive job URL: $hive_url\n\n";
 print "# If any jobs failed you can run them locally with:\n";
 print "# runWorker.pl -url=$hive_url -reg_conf $reg_file -job_id=XYZ\n\n";
 
-print "\n\n# IMPORTANT: if you mapped a new probeset please edit $METASPREADSHEET\n\n";
+print "\n\n# IMPORTANT: if you mapped a new probeset please edit PROBESPREADSHEET\n\n";
