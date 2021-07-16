@@ -47,9 +47,9 @@ sub help_message {
 
 if($ensembl_version){
 	# check Ensembl API is in env
-	if(!grep(/ensembl-$ensembl_version\/ensembl-hive\/modules/,@INC)){
-                die "# EXIT : cannot find ensembl-$ensembl_version/ensembl-hive/modules in \$PERL5LIB / \@INC\n"
-        }
+	if(!grep(/ensembl-hive\/modules/,@INC)){
+		die "# EXIT : cannot find ensembl-hive/modules in \$PERL5LIB / \@INC\n"
+	}
 }
 else{ die "# EXIT : need a valid -v version, such as -v 95\n" } 
 
