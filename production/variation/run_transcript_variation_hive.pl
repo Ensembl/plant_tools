@@ -9,11 +9,11 @@ use Bio::EnsEMBL::Registry;
 #
 # NOTE: hive pipelines must be run in eb-cli nodes
 #
-# Uses env $ENSAPIPATH to locate ensembl-variation & ensembl-hive API
+# Uses env $ENSEMBL_ROOT_DIR to locate ensembl-variation & ensembl-hive API
 # and env $USER to create hive job names 
 #
 # Adapted from Dan Bolser's run_the_transcript_variation_pipeline.sh
-# by B Contreras Moreira 2019-20
+# by B Contreras Moreira 2019-21
 #
 # http://www.ebi.ac.uk/seqdb/confluence/display/EnsGen/The+transcript+variation+pipeline
 #
@@ -54,15 +54,15 @@ if($opts{'v'}){
         $ensembl_version = $opts{'v'};
 
         # check ensembl-hive API exists for this version
-        $hive_path = "$ensemblpath/ensembl-$ensembl_version/ensembl-hive/";
+        $hive_path = "$ensemblpath/ensembl-hive/";
         if(!-d $hive_path) {
-                die "# EXIT : cannot find ensembl-$ensembl_version/ensembl-hive,".
+                die "# EXIT : cannot find ensembl-hive,".
 			"\n# make sure \$ENSAPIPATH is set\n";
         } 
 	# now check ensembl-variation
-	$var_path = "$ensemblpath/ensembl-$ensembl_version/ensembl-variation/";
+	$var_path = "$ensemblpath/ensembl-variation/";
         if(!-d $var_path) {
-                die "# EXIT : cannot find ensembl-$ensembl_version/ensembl-variation,".
+                die "# EXIT : cannot find ensembl-variation,".
                         "\n# make sure \$ENSAPIPATH is set\n";
         }
 }
