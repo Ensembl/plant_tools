@@ -16,7 +16,7 @@ use Bio::EnsEMBL::Registry;
 #
 # NOTE: hive pipelines must be run in eb-cli nodes
 #
-# Uses env $ENSAPIPATH to locate ensembl-hive API
+# Uses env $ENSEMBL_ROOT_DIR to locate ensembl-hive API
 # and env $USER to create hive job names 
 #
 # B Contreras Moreira EMBL-EBI 2019-21
