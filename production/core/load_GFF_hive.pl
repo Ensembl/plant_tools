@@ -536,7 +536,7 @@ if($meta_adaptor->single_value_by_key( 'annotation.provider_url' )){
 ## Run init script and produce a hive_db with all tasks to be carried out
 #########################################################################
 
-my $initcmd = "init_pipeline.pl Bio::EnsEMBL::EGPipeline::PipeConfig::LoadGFF3_conf ".
+my $initcmd = "init_pipeline.pl Bio::EnsEMBL::Pipeline::PipeConfig::LoadGFF3_conf ".
 	"$hive_args ".
 	"--registry $reg_file ".
 	"--production_db $prodbname ".
