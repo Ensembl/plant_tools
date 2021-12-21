@@ -43,7 +43,7 @@ my $CHUNKSIZE = 10_000; # actually #lines of FASTA sequence; if lines are 60-wid
 }
 
 sub usage {
-    say "Usage perl break_fasta.pl [a] [b]";
+    say "Usage perl break_fasta.pl [a]";
     exit 0;
 }
  
