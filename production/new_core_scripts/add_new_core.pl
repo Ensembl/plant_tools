@@ -8,8 +8,8 @@
 use 5.14.0;
 use warnings;
 use FindBin '$Bin';
-use lib "$Bin/..";
-use Tools::FileReader qw( file2hash_tab );
+use lib "$Bin/../..";
+use production::Tools::FileReader qw( file2hash_tab );
 use File::Temp qw( tempdir );
 use Data::Dumper;
 use Getopt::Long;
