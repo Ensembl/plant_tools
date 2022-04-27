@@ -1,7 +1,7 @@
-This is the WheatIS (Wheat Information System, formerly transPLANT) dump for release XX of Ensembl Plants:
+This is the WheatIS (Wheat Information System, formerly transPLANT) dump for release 53 of Ensembl Plants:
 
-ftp://ftp.ensemblgenomes.org/pub/misc_data/TransPLANT/transplant-EBI-core-XX.tsv.gz
-ftp://ftp.ensemblgenomes.org/pub/misc_data/TransPLANT/transplant-EBI-otherfeatures-XX.tsv.gz
+ftp://ftp.ensemblgenomes.org/pub/misc_data/TransPLANT/transplant-EBI-core-53.tsv.gz
+ftp://ftp.ensemblgenomes.org/pub/misc_data/TransPLANT/transplant-EBI-otherfeatures-53.tsv.gz
 
 Columns are:
 * name			(gene name, where available, else gene ID)
