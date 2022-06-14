@@ -6,7 +6,7 @@ use warnings;
 use Data::Dumper;
 use Cwd;
 use DBI;
-use production::Tools::FileReader qw(slurp slurp_hash_list read_file file2hash file2hash_tab line2hash);
+use Tools::FileReader qw(slurp slurp_hash_list read_file file2hash file2hash_tab line2hash);
 
 {
     my ($species) = @ARGV;
