@@ -22,7 +22,7 @@ my $CHUNKSIZE = 10_000; # actually #lines of FASTA sequence; if lines are 60-wid
         
         ##Create a new chunk each time there is a header
         ##This needs to be changed according to the header
-        if ($line =~ /^>(\d+\w*)/ || $line =~ /^>(Un)/ || $line =~ /^>(\S+)/){
+        if ($line =~ /^>(\d+\w*)/ || $line =~ /^>(Un)/ || $line =~ /^>(\S+)/ || $line =~ /^>(UA)/){
             
             ##Header is <chrom number>_<chunk count>
             $header = ">$1";

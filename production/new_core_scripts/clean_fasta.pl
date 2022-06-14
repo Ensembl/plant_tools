@@ -15,7 +15,7 @@ use feature qw/say/;
     while (my $line = <IN>){
         chomp($line);
         if ($line =~ /^>chr(.*?)__/ || # wheat
-			  $line =~ /^>Chr(\S+)/ || $line =~ /chromosome\s*(\w+)/i #generic
+			  $line =~ /^>Chr(\S+)/ || $line =~ /chromosome:\s*(\w+)/i #generic
 			  ){
             $line = ">$1";
         }
@@ -28,4 +28,4 @@ sub usage {
     exit 0;
 }
  
-
+###>OU343190.1 Triticum aestivum genome assembly, chromosome: UA
