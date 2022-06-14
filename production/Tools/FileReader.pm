@@ -1,7 +1,7 @@
 ###======================================== 
 #A set of subroutines for file/api handlind and parsing 
 ###======================================== 
-package production::Tools::FileReader;
+package Tools::FileReader;
 require Exporter;
 # symbols to export on request
 @ISA = qw(Exporter);
